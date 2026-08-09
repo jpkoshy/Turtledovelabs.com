@@ -1,8 +1,8 @@
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
-import { Network } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
+import logo from '@assets/Turtledovelabs_1786244932892.png';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -23,11 +23,12 @@ export default function Navbar() {
       )}
     >
       <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 group">
-          <Network className="w-8 h-8 text-primary group-hover:text-primary/80 transition-colors" />
-          <span className="font-sans font-bold text-xl tracking-tight text-foreground">
-            NEURAL<span className="text-muted-foreground font-light">EDGE</span>
-          </span>
+        <Link href="/" className="flex items-center group">
+          <img
+            src={logo}
+            alt="Turtledovelabs"
+            className="h-11 w-auto object-contain bg-white rounded-md px-2 py-1 group-hover:opacity-90 transition-opacity"
+          />
         </Link>
 
         <nav className="hidden md:flex items-center gap-8 font-mono text-sm">

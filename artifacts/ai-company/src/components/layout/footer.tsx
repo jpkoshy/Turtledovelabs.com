@@ -1,4 +1,4 @@
-import { Network } from 'lucide-react';
+import logo from '@assets/Turtledovelabs_1786244932892.png';
 
 export default function Footer() {
   return (
@@ -7,11 +7,12 @@ export default function Footer() {
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-16">
           <div className="md:col-span-1">
-            <div className="flex items-center gap-2 mb-6 group cursor-pointer">
-              <Network className="w-6 h-6 text-primary group-hover:text-primary/80 transition-colors" />
-              <span className="font-sans font-bold text-lg tracking-tight text-foreground">
-                NEURAL<span className="text-muted-foreground font-light">EDGE</span>
-              </span>
+            <div className="mb-6">
+              <img
+                src={logo}
+                alt="Turtledovelabs"
+                className="h-14 w-auto object-contain bg-white rounded-md px-3 py-1.5 opacity-90"
+              />
             </div>
             <p className="text-muted-foreground font-mono text-xs leading-relaxed mb-6">
               Engineering intelligence for the enterprise layer. We build autonomous systems that redefine operational limits.
@@ -50,7 +51,7 @@ export default function Footer() {
 
         <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-muted-foreground font-mono text-xs">
-            © {new Date().getFullYear()} NeuralEdge AI. All rights reserved.
+            © {new Date().getFullYear()} Turtledovelabs. All rights reserved.
           </p>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(0,255,255,0.8)] animate-pulse" />
