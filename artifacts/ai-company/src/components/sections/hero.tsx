@@ -1,12 +1,17 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 import { Link } from 'wouter';
 import heroBg from '../../../attached_assets/generated_images/hero-bg.jpg';
+import ContactModal from '@/components/contact-modal';
 
 export default function Hero() {
+  const [contactOpen, setContactOpen] = useState(false);
+
   return (
     <section className="relative min-h-[100dvh] flex items-center pt-20 overflow-hidden">
+      <ContactModal open={contactOpen} onOpenChange={setContactOpen} />
       {/* Background Image & Overlay */}
       <div className="absolute inset-0 z-0">
         <img 
@@ -57,7 +62,7 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
           >
-            <Button size="lg" className="group w-full sm:w-auto">
+            <Button size="lg" className="group w-full sm:w-auto" onClick={() => setContactOpen(true)}>
               Initialize Protocol
               <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Button>
