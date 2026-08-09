@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "AI Solutions Company"
+description = "A premium landing page for an AI solutions company. Showcases the company's AI-powered products, services, capabilities, and team. Designed to convert enterprise prospects and developers browsing for cutting-edge AI tools."
+version = "1.0.0"
+id = "artifacts/ai-company"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19776
+
+[services.development]
+run = "pnpm --filter @workspace/ai-company run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/ai-company", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/ai-company/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19776"
+BASE_PATH = "/"
