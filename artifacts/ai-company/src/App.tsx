@@ -6,6 +6,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 import Home from '@/pages/home';
+import Architecture from '@/pages/architecture';
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ function Router() {
       <ScrollToTop />
       <Switch>
         <Route path="/" component={Home} />
+        <Route path="/architecture" component={Architecture} />
         <Route component={NotFound} />
       </Switch>
     </RoutedErrorBoundary>

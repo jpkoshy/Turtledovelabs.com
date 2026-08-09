@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
+import { Link } from 'wouter';
 import heroBg from '../../../attached_assets/generated_images/hero-bg.jpg';
 
 export default function Hero() {
@@ -60,9 +61,11 @@ export default function Hero() {
               Initialize Protocol
               <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button variant="outline" size="lg" className="w-full sm:w-auto">
-              View Architecture
-            </Button>
+            <Link href="/architecture">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                View Architecture
+              </Button>
+            </Link>
           </motion.div>
         </div>
       </div>
