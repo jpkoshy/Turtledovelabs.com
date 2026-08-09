@@ -66,61 +66,62 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* Base Variables - Always Dark Mode as default for this vibe */
+/* Base Variables - Deep navy palette derived from Turtledovelabs logo */
 :root {
-  --button-outline: rgba(255, 255, 255, 0.1);
-  --badge-outline: rgba(255, 255, 255, 0.05);
+  --button-outline: rgba(255, 255, 255, 0.12);
+  --badge-outline: rgba(255, 255, 255, 0.06);
 
   --opaque-button-border-intensity: -8;
 
-  --elevate-1: rgba(255, 255, 255, 0.03);
-  --elevate-2: rgba(255, 255, 255, 0.08);
+  --elevate-1: rgba(255, 255, 255, 0.04);
+  --elevate-2: rgba(255, 255, 255, 0.09);
 
-  /* Dark luminous colors */
-  --background: 220 50% 5%;
-  --foreground: 210 20% 98%;
+  /* Deep navy backgrounds */
+  --background: 224 70% 6%;
+  --foreground: 210 30% 97%;
 
-  --border: 220 25% 15%;
+  --border: 224 45% 16%;
 
-  --card: 220 40% 7%;
-  --card-foreground: 210 20% 98%;
-  --card-border: 220 30% 12%;
+  --card: 224 60% 9%;
+  --card-foreground: 210 30% 97%;
+  --card-border: 224 50% 14%;
 
-  --popover: 220 40% 7%;
-  --popover-foreground: 210 20% 98%;
-  --popover-border: 220 30% 12%;
+  --popover: 224 60% 9%;
+  --popover-foreground: 210 30% 97%;
+  --popover-border: 224 50% 14%;
 
-  --primary: 190 90% 60%;
-  --primary-foreground: 220 50% 5%;
+  /* Logo electric blue as primary */
+  --primary: 207 100% 55%;
+  --primary-foreground: 224 70% 6%;
 
-  --secondary: 220 30% 12%;
-  --secondary-foreground: 210 20% 98%;
+  --secondary: 224 50% 14%;
+  --secondary-foreground: 210 30% 97%;
 
-  --muted: 220 25% 15%;
-  --muted-foreground: 215 15% 65%;
+  --muted: 224 45% 16%;
+  --muted-foreground: 218 20% 62%;
 
-  --accent: 190 90% 60%;
-  --accent-foreground: 220 50% 5%;
+  --accent: 207 100% 55%;
+  --accent-foreground: 224 70% 6%;
 
   --destructive: 0 84% 60%;
-  --destructive-foreground: 210 20% 98%;
+  --destructive-foreground: 210 30% 97%;
 
-  --input: 220 25% 15%;
-  --ring: 190 90% 60%;
+  --input: 224 45% 16%;
+  --ring: 207 100% 55%;
 
-  --sidebar: 220 40% 7%;
-  --sidebar-foreground: 210 20% 98%;
-  --sidebar-border: 220 25% 15%;
-  --sidebar-primary: 190 90% 60%;
-  --sidebar-primary-foreground: 220 50% 5%;
-  --sidebar-accent: 220 25% 15%;
-  --sidebar-accent-foreground: 210 20% 98%;
-  --sidebar-ring: 190 90% 60%;
+  --sidebar: 224 60% 9%;
+  --sidebar-foreground: 210 30% 97%;
+  --sidebar-border: 224 45% 16%;
+  --sidebar-primary: 207 100% 55%;
+  --sidebar-primary-foreground: 224 70% 6%;
+  --sidebar-accent: 224 45% 16%;
+  --sidebar-accent-foreground: 210 30% 97%;
+  --sidebar-ring: 207 100% 55%;
 
-  --chart-1: 190 90% 60%;
-  --chart-2: 220 80% 40%;
-  --chart-3: 270 80% 60%;
-  --chart-4: 160 80% 50%;
+  --chart-1: 207 100% 55%;
+  --chart-2: 224 80% 45%;
+  --chart-3: 190 90% 60%;
+  --chart-4: 245 80% 65%;
   --chart-5: 45 90% 60%;
 
   --radius: 0; /* Sharp, precise corners */
@@ -157,11 +158,11 @@
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
 }
 
-/* Electric Grid */
+/* Electric Grid — navy-tinted */
 .bg-electric-grid {
   background-size: 40px 40px;
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-image: linear-gradient(to right, rgba(0, 140, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 140, 255, 0.07) 1px, transparent 1px);
   mask-image: radial-gradient(circle at center, black, transparent 80%);
 }
 
@@ -169,14 +170,15 @@
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-image: linear-gradient(135deg, hsl(210 20% 98%) 0%, hsl(215 15% 65%) 100%);
+  background-image: linear-gradient(135deg, hsl(210 30% 97%) 0%, hsl(218 20% 62%) 100%);
 }
 
 .text-gradient-primary {
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-image: linear-gradient(135deg, hsl(190 90% 60%) 0%, hsl(220 80% 40%) 100%);
+  /* navy deep blue → electric logo blue */
+  background-image: linear-gradient(135deg, hsl(207 100% 70%) 0%, hsl(224 80% 50%) 100%);
 }
 
 .glow-border {
@@ -186,7 +188,8 @@
   content: '';
   position: absolute;
   inset: -1px;
-  background: linear-gradient(135deg, hsl(190 90% 60%), hsl(220 80% 40%));
+  /* logo gradient: electric blue → deep navy blue */
+  background: linear-gradient(135deg, hsl(207 100% 55%), hsl(224 80% 40%));
   z-index: -1;
   opacity: 0;
   transition: opacity 0.3s ease;
