@@ -318,7 +318,7 @@ export default function Architecture() {
               </Button>
             </Link>
             <div className="hidden md:block w-px h-5 bg-border" />
-            <img src={logo} alt="Turtledovelabs" className="hidden md:block h-8 w-auto bg-white rounded px-2 py-0.5" />
+            <img src={logo} alt="Turtledove Labs" className="hidden md:block h-8 w-auto bg-white rounded px-2 py-0.5" />
           </div>
 
           <div className="text-center">

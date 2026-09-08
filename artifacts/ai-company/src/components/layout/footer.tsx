@@ -2,56 +2,37 @@ import logo from '@assets/Turtledovelabs_1786244932892.png';
 
 export default function Footer() {
   return (
-    <footer className="border-t border-border bg-background pt-24 pb-12 relative overflow-hidden">
+    <footer id="contact" className="border-t border-border bg-background pt-24 pb-12 relative overflow-hidden">
       <div className="absolute inset-0 bg-electric-grid opacity-20 pointer-events-none" />
       <div className="container mx-auto px-6 md:px-12 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-16">
-          <div className="md:col-span-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 mb-16">
+          <div>
             <div className="mb-6">
               <img
                 src={logo}
-                alt="Turtledovelabs"
+                alt="Turtledove Labs"
                 className="h-14 w-auto object-contain bg-white rounded-md px-3 py-1.5 opacity-90"
               />
             </div>
             <p className="text-muted-foreground font-mono text-xs leading-relaxed mb-6">
-              Engineering intelligence for the enterprise layer. We build autonomous systems that redefine operational limits.
+              Custom AI infrastructure, designed and deployed inside your own environment.
             </p>
           </div>
           
-          <div>
-            <h4 className="font-mono text-primary text-xs uppercase tracking-widest mb-6">Platform</h4>
-            <ul className="space-y-4 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">Custom Models</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Data Intelligence</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Autonomous Agents</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Infrastructure</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-mono text-primary text-xs uppercase tracking-widest mb-6">Company</h4>
-            <ul className="space-y-4 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">About Us</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Research</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Careers</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Contact</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-mono text-primary text-xs uppercase tracking-widest mb-6">Legal</h4>
-            <ul className="space-y-4 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">System Status</a></li>
-            </ul>
+          <div className="md:text-right md:self-end">
+            <h4 className="font-mono text-primary text-xs uppercase tracking-widest mb-5">Start a Conversation</h4>
+            <a href="mailto:hello@turtledovelabs.com" className="text-xl md:text-2xl font-bold hover:text-primary transition-colors">
+              hello@turtledovelabs.com
+            </a>
+            <p className="mt-4 text-muted-foreground font-mono text-xs leading-relaxed">
+              Tell us which workflow, decision, or document set is slowing your team down.
+            </p>
           </div>
         </div>
 
         <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-muted-foreground font-mono text-xs">
-            © {new Date().getFullYear()} Turtledovelabs. All rights reserved.
+            © {new Date().getFullYear()} Turtledove Labs. All systems described are custom-engineered per client; capabilities vary by engagement scope.
           </p>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(0,255,255,0.8)] animate-pulse" />

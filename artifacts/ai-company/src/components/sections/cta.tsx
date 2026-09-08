@@ -27,25 +27,18 @@ export default function CTA() {
             </div>
 
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
-              Initiate <span className="text-gradient">Protocol.</span>
+              Let's <span className="text-gradient">Architect It.</span>
             </h2>
             
             <p className="text-muted-foreground font-mono leading-relaxed mb-10 max-w-xl mx-auto">
-              Our engineering team is ready to architect your custom intelligence infrastructure. Request an architectural review to determine deployment feasibility.
+              We take on a small number of engagements at a time so each one gets real attention. Start with a no-cost architecture review to see if there's a fit.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button size="lg" className="w-full sm:w-auto min-w-[200px]">
-                Request Access
-              </Button>
-              <Button variant="outline" size="lg" className="w-full sm:w-auto min-w-[200px]">
-                View Documentation
+              <Button size="lg" className="w-full sm:w-auto min-w-[260px]" asChild>
+                <a href="mailto:hello@turtledovelabs.com?subject=Architecture%20Review">Book an Architecture Review →</a>
               </Button>
             </div>
-            
-            <p className="mt-8 text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
-              Processing capacity strictly limited for Q3.
-            </p>
           </motion.div>
         </div>
       </div>

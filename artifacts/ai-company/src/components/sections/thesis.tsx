@@ -37,7 +37,7 @@ export default function Thesis() {
                 <span className="text-muted-foreground">Specific AI is an unfair advantage.</span>
               </h3>
               <p className="text-muted-foreground font-mono leading-relaxed text-sm md:text-base">
-                The next era of enterprise value isn't about using the same chat interfaces as your competitors. It's about fundamentally rewiring how your organization makes decisions, processes information, and executes tasks. Turtledovelabs builds the underlying intelligence infrastructure that makes this possible.
+                The next era of enterprise value isn't about using the same chat interfaces as your competitors. It's about fundamentally rewiring how your organization makes decisions, processes information, and executes tasks. Turtledove Labs builds the underlying intelligence infrastructure that makes this possible.
               </p>
             </motion.div>
           </div>

@@ -43,6 +43,9 @@ export default function DataIntelligence() {
                 <div className="text-xs text-muted-foreground font-mono uppercase tracking-widest">Data Leakage</div>
               </div>
             </div>
+            <p className="mt-8 border-l border-primary/40 pl-4 text-muted-foreground font-mono text-sm leading-relaxed">
+              A first engagement here usually starts with a single high-volume document set — support tickets, internal wikis, or contracts — rather than your entire data estate.
+            </p>
           </motion.div>
 
           <motion.div

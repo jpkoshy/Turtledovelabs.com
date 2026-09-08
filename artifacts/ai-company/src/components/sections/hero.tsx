@@ -48,13 +48,22 @@ export default function Hero() {
             <span className="text-gradient-primary">Scale.</span>
           </motion.h1>
 
-          <motion.p 
-            className="text-lg md:text-xl text-muted-foreground font-mono max-w-2xl mb-12 leading-relaxed"
+          <motion.p
+            className="text-lg md:text-xl text-foreground font-mono max-w-3xl mb-5 leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
           >
-            We deploy bespoke, high-performance AI models and autonomous agent networks for enterprises that demand precision, privacy, and absolute operational dominance.
+            We build custom AI systems — trained on your own data, deployed inside your own infrastructure — that automate the specific, high-volume decisions your business currently pays people to make by hand.
+          </motion.p>
+
+          <motion.p
+            className="text-sm md:text-base text-muted-foreground font-mono max-w-2xl mb-12 leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+          >
+            Turtledove Labs designs and deploys bespoke AI models and autonomous agent networks for teams that need more than a chat interface: precision tuned to your operations, and data that never leaves your control.
           </motion.p>
 
           <motion.div 
@@ -71,7 +80,7 @@ export default function Hero() {
                 setContactOpen(true);
               }}
             >
-              Initialize Protocol
+              Book an Architecture Review
               <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Link
@@ -79,7 +88,7 @@ export default function Hero() {
               onClick={() => trackEvent('architecture_viewed', { location: 'hero' })}
             >
               <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                View Architecture
+                View Architecture →
               </Button>
             </Link>
           </motion.div>

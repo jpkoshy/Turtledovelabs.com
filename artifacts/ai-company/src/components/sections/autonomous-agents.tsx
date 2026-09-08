@@ -81,8 +81,8 @@ export default function AutonomousAgents() {
               Move past conversational AI. We engineer specialized agent swarms that hook into your ERP, CRM, and internal databases to autonomously execute complex, multi-step processes 24/7.
             </p>
             
-            <Button variant="outline" className="mt-4">
-              Read the Whitepaper
+            <Button variant="outline" className="mt-4" asChild>
+              <a href="mailto:hello@turtledovelabs.com?subject=Workflow%20Automation">Discuss a Workflow</a>
             </Button>
           </motion.div>
 

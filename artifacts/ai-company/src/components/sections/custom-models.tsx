@@ -80,6 +80,9 @@ export default function CustomModels() {
                 </li>
               ))}
             </ul>
+            <p className="mt-8 border-l border-primary/40 pl-4 text-muted-foreground font-mono text-sm leading-relaxed">
+              A first engagement here is typically scoped around one well-defined task — for example, classifying inbound requests using your existing taxonomy — before expanding to broader fine-tuning.
+            </p>
           </motion.div>
 
         </div>

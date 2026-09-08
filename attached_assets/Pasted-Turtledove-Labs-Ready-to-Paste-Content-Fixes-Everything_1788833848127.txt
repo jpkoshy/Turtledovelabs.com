@@ -1,0 +1,203 @@
+Turtledove Labs — Ready-to-Paste Content & Fixes
+
+Everything below is written to slot into the site's existing sections and keep its current visual style (dark, technical, terminal-inspired). Nothing here requires a redesign — it's replacement copy, working CTA markup, and two small new sections (a footer and a "how it works" block) that the site is currently missing.
+
+One judgment call I made: I kept the confident, infrastructure-forward voice rather than rewriting it toward the leaner, Canadian-SMB-compliance angle from your other planning, since I don't know which positioning you've settled on for this site specifically. If you want the SMB/compliance version instead, tell me and I'll rewrite this whole set around that angle — it's a different (and probably easier to substantiate) story.
+
+Two placeholders you'll need to fill in before this goes live: a real contact email or booking link (I used hello@turtledovelabs.com and a placeholder Calendly URL — swap for whatever you actually want to receive inquiries), and either a founder name/bio or a decision to leave the team section out entirely.
+
+1. Fix the browser tab title and share preview
+
+This is metadata, not visible on the page itself, but it's what shows up in search results, browser tabs, and link previews (Slack, email, iMessage, etc.). Right now it still reads as unedited template text.
+
+Replace:
+
+html
+<title>AI Solutions Company</title>
+<meta name="description" content="AI Solutions Company — built on Replit. Update this description to reflect the app.">
+
+With:
+
+html
+<title>Turtledove Labs — Custom AI Infrastructure for the Enterprise</title>
+<meta name="description" content="Turtledove Labs designs and deploys custom-trained AI models and autonomous agent systems inside your own infrastructure. No off-the-shelf chat wrappers — purpose-built intelligence for your operations.">
+2. Header buttons
+
+"Client Portal" implies an existing login system for existing clients — leave this out until that's real; it invites a visitor to click something that goes nowhere, which is worse than not offering it. Replace it with a second, softer CTA next to "Deploy Now."
+
+Replace:
+
+html
+<button>Client Portal</button>
+<button>Deploy Now</button>
+
+With:
+
+html
+<a href="#contact" class="btn-secondary">See How It Works</a>
+<a href="mailto:hello@turtledovelabs.com?subject=Architecture%20Review" class="btn-primary">Talk to Us</a>
+
+#contact should scroll to the new footer/contact block in section 8 below. If you'd rather route this through a booking link instead of email, swap the href for your Calendly (or similar) URL.
+
+3. Hero section
+
+Keep the visual treatment (the "SYSTEM V4.2 ONLINE" badge, the animated background, the lat/long readout) — it's distinctive and it's not the problem. The problem is that a first-time visitor still doesn't know what you do. Add one plain sentence directly under the existing headline, before the current paragraph.
+
+Current:
+
+Intelligence Engineered for Scale. We deploy bespoke, high-performance AI models and autonomous agent networks for enterprises that demand precision, privacy, and absolute operational dominance.
+
+Replace with:
+
+Intelligence Engineered for Scale. We build custom AI systems — trained on your own data, deployed inside your own infrastructure — that automate the specific, high-volume decisions your business currently pays people to make by hand.
+
+Turtledove Labs designs and deploys bespoke AI models and autonomous agent networks for teams that need more than a chat interface: precision tuned to your operations, and data that never leaves your control.
+
+The second paragraph is your existing copy, lightly trimmed ("absolute operational dominance" → cut; it's the kind of phrase that reads as filler under scrutiny). The new first line does the actual explaining.
+
+CTA buttons — replace the dead ones:
+
+html
+<a href="mailto:hello@turtledovelabs.com?subject=Architecture%20Review" class="btn-primary">Book an Architecture Review</a>
+<a href="/architecture" class="btn-secondary">View Architecture →</a>
+
+("Initialize Protocol" → "Book an Architecture Review": same energy, but it tells the visitor exactly what clicking it gets them.)
+
+4. "Our Thesis" section
+
+This section is your strongest writing on the page — it's opinionated and it holds together. Keep it almost as-is. One change: "Turtledovelabs" is missing a space/consistent casing where the company name appears mid-paragraph — make sure it's rendered as "Turtledove Labs" everywhere (headers, body copy, and the meta tags) since right now it's inconsistent between the visible title ("AI Solutions Company") and the body text ("Turtledovelabs").
+
+No content rewrite needed here beyond that consistency fix.
+
+5. Platform Architecture module cards
+
+The six module cards (Custom LLM Training, Vector Infrastructure, Multi-Agent Systems, Predictive Intelligence, Air-Gapped Deployment, API-First Architecture) are well organized but stay abstract — each one describes a capability, not an outcome. Add one concrete "in practice" line to each card, under the existing description, before the "Explore Module →" link.
+
+Custom LLM Training
+Fine-tuning and full-parameter training of open-source models tailored to your industry's taxonomy and workflows.
+→ In practice: your model learns your internal terminology, product catalog, and edge cases instead of guessing at them.
+
+Vector Infrastructure
+Enterprise-grade RAG pipelines with semantic caching, hybrid search, and sub-millisecond retrieval latency.
+→ In practice: your team (or your agents) can ask a natural-language question and get an answer sourced from your actual documents, not the model's training data.
+
+Multi-Agent Systems
+Orchestrating swarms of specialized agents to handle complex, asynchronous tasks across your organization.
+→ In practice: a multi-step process — say, intake, validation, and routing — runs end to end without a person babysitting each handoff.
+
+Predictive Intelligence
+Time-series forecasting and anomaly detection running at the edge for real-time operational insights.
+→ In practice: you get a flag before a metric breaks its normal range, not a report explaining it after the fact.
+
+Air-Gapped Deployment
+Zero-trust environments. Models deployed securely on-premise or within isolated cloud enclaves.
+→ In practice: your data never crosses into a third-party API — the model runs where your data already lives.
+
+API-First Architecture
+Headless intelligence. Integrate our capabilities directly into your existing software stack with comprehensive REST/gRPC endpoints.
+→ In practice: this plugs into the tools your team already uses instead of asking them to learn a new interface.
+
+Each "in practice" line is one sentence — keep it that short so the cards don't get heavy.
+
+6. Module 01 / 02 / 03 deep-dive sections
+
+These three sections (Models that speak your language / Data pipelines that actually scale / Workflows that execute themselves) can stay structurally the same. Add a single closing line to each that names what a first engagement in that area actually looks like — this is the biggest lever for making the page feel real instead of aspirational.
+
+Module 01 (Custom LLM Training) — add after the existing bullet list:
+
+A first engagement here is typically scoped around one well-defined task — for example, classifying inbound requests using your existing taxonomy — before expanding to broader fine-tuning.
+
+Module 02 (Vector Infrastructure) — add after the stats row:
+
+A first engagement here usually starts with a single high-volume document set (support tickets, internal wikis, or contracts) rather than your entire data estate.
+
+Module 03 (Autonomous Workflows) — replace the "READ THE WHITEPAPER" button (only include this if the whitepaper actually exists — a link to a document that isn't there is the same trust problem as the dead buttons) with:
+
+html
+<a href="mailto:hello@turtledovelabs.com?subject=Workflow%20Automation" class="btn-secondary">Discuss a Workflow</a>
+7. Performance Telemetry section
+
+This is the section to be most careful with. Presented as historical results ("$87.5M capital saved... in 2024," "47.2% average efficiency gain," "0 data breaches"), these numbers currently read as a track record you don't have evidence for on the page — and it's the section a skeptical enterprise buyer will scrutinize hardest. You have two honest options:
+
+Option A — you have at least one real number or pilot to point to. Replace the section with that one real, attributable result, named or anonymized ("a mid-market logistics client reduced manual routing time by X% in a Q2 2026 pilot"). One true, specific number beats four impressive-sounding unattributed ones.
+
+Option B — there's no client history yet. Replace the "track record" framing with a capability/target framing instead — still confident, but honest about what it is:
+
+What to expect
+Built for measurable impact
+
+<15ms
+TARGET INFERENCE LATENCY
+For edge-deployed quantized models, based on internal benchmarks
+
+Zero third-party exposure
+By design
+Air-gapped and VPC deployment options mean your data never leaves your infrastructure
+
+[Your pilot engagement, here]
+We're currently taking on a small number of pilot engagements — book an architecture review to be considered.
+
+The key change is the labeling: "target" and "by design" are honest claims about the system's architecture; "$87.5M capital saved... in 2024" is a claim about business outcomes you'd need a client to vouch for.
+
+8. New: footer / contact section
+
+The site currently has no footer at all — no contact info, no location, no way to identify who's behind it. Add this at the very bottom, below the closing CTA:
+
+html
+<footer id="contact">
+  <div class="footer-brand">Turtledove Labs</div>
+  <p>Custom AI infrastructure, designed and deployed inside your own environment.</p>
+
+  <div class="footer-contact">
+    <a href="mailto:hello@turtledovelabs.com">hello@turtledovelabs.com</a>
+    <!-- Optional, include only if you want to name yourself publicly: -->
+    <!-- <span>Founded by John Koshy</span> -->
+    <!-- <a href="https://linkedin.com/in/YOUR-HANDLE">LinkedIn</a> -->
+  </div>
+
+  <p class="footer-meta">© 2026 Turtledove Labs. All systems described are custom-engineered per client; capabilities vary by engagement scope.</p>
+</footer>
+
+The commented-out founder line matters more than it looks like it should: for a one- or two-person shop asking enterprise clients to trust it with proprietary data, a named, findable person behind the offer is one of the highest-leverage trust signals available at this stage. Include it if you're comfortable being publicly named as the point of contact; leave it out if you'd rather stay unnamed for now, but in that case consider adding a generic "Our Team" line instead of nothing.
+
+9. New: "How It Works" section
+
+Add this between the Platform Architecture section and Performance Telemetry. It gives a visitor a concrete next step to picture instead of just an outcome to admire.
+
+How It Works
+
+01 — Architecture Review
+A working session to map your current workflows, data sources, and the specific bottleneck you want solved. No cost, no commitment.
+
+02 — Pilot
+A scoped, time-boxed build against one real use case — usually the fastest way to prove the approach before expanding it.
+
+03 — Deployment
+The proven pilot moves into your production environment (VPC, on-prem, or air-gapped), with monitoring and handoff documentation.
+
+[Book an Architecture Review →]
+
+Keep the three-step structure even if the exact names change — the value is in showing there's a defined, bounded first step rather than an open-ended "enterprise engagement."
+
+10. Closing CTA section
+
+Drop the artificial scarcity line — "processing capacity strictly limited for Q3" reads as manufactured urgency on a page with no visible client base yet, and it undercuts the otherwise confident tone.
+
+Replace:
+
+Initiate Protocol.
+Our engineering team is ready to architect your custom intelligence infrastructure. Request an architectural review to determine deployment feasibility.
+[REQUEST ACCESS] [VIEW DOCUMENTATION]
+PROCESSING CAPACITY STRICTLY LIMITED FOR Q3.
+
+With:
+
+Let's Architect It.
+We take on a small number of engagements at a time so each one gets real attention. Start with a no-cost architecture review to see if there's a fit.
+[Book an Architecture Review →]
+
+Only keep "View Documentation" if real documentation exists somewhere to link to; otherwise drop it for the same reason as the whitepaper link above.
+
+Summary of what changes functionally (not just copy)
+
+Every button on the page now points somewhere real: a mailto: link with a prefilled subject (swap for a booking link if you'd rather route through a calendar), or an anchor link down to the new footer. The title tag and meta description stop exposing that this is an unedited template. A new footer gives visitors a way to identify and reach the company. A new three-step section gives visitors a way to picture engaging without guessing. And the stats section stops presenting unattributed numbers as a track record it doesn't yet have receipts for.

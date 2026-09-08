@@ -26,7 +26,7 @@ export default function Navbar() {
         <Link href="/" className="flex items-center group">
           <img
             src={logo}
-            alt="Turtledovelabs"
+            alt="Turtledove Labs"
             className="h-11 w-auto object-contain bg-white rounded-md px-2 py-1 group-hover:opacity-90 transition-opacity"
           />
         </Link>
@@ -38,11 +38,11 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm" className="hidden md:inline-flex">
-            Client Portal
+          <Button variant="outline" size="sm" className="hidden md:inline-flex" asChild>
+            <a href="#how-it-works">See How It Works</a>
           </Button>
-          <Button size="sm">
-            Deploy Now
+          <Button size="sm" asChild>
+            <a href="mailto:hello@turtledovelabs.com?subject=Architecture%20Review">Talk to Us</a>
           </Button>
         </div>
       </div>

@@ -8,6 +8,7 @@ import DataIntelligence from '@/components/sections/data-intelligence';
 import AutonomousAgents from '@/components/sections/autonomous-agents';
 import Metrics from '@/components/sections/metrics';
 import CTA from '@/components/sections/cta';
+import HowItWorks from '@/components/sections/how-it-works';
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
         <CustomModels />
         <DataIntelligence />
         <AutonomousAgents />
+        <HowItWorks />
         <Metrics />
         <CTA />
       </main>

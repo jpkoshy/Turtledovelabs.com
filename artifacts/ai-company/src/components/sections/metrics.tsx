@@ -1,10 +1,9 @@
 import { motion } from 'framer-motion';
 
 const metrics = [
-  { value: "47.2%", label: "Average Efficiency Gain", desc: "Across automated operational workflows" },
-  { value: "<15ms", label: "Inference Latency", desc: "For edge-deployed quantized models" },
-  { value: "$87.5M", label: "Capital Saved", desc: "By optimizing legacy processes in 2024" },
-  { value: "0", label: "Data Breaches", desc: "Absolute guarantee with air-gapped deployments" }
+  { value: "<15ms", label: "Target Inference Latency", desc: "For edge-deployed quantized models, based on internal benchmarks" },
+  { value: "Zero", label: "Third-Party Exposure", desc: "By design: air-gapped and VPC deployments keep data inside your infrastructure" },
+  { value: "Pilot", label: "Your Engagement Here", desc: "We are taking on a small number of pilot engagements — book an architecture review to be considered" }
 ];
 
 export default function Metrics() {
@@ -20,13 +19,13 @@ export default function Metrics() {
           transition={{ duration: 0.6 }}
           className="text-center mb-20"
         >
-          <h2 className="font-mono text-primary text-xs uppercase tracking-widest mb-6">Performance Telemetry</h2>
+          <h2 className="font-mono text-primary text-xs uppercase tracking-widest mb-6">What to Expect</h2>
           <h3 className="text-3xl md:text-5xl font-bold tracking-tight">
-            Impact <span className="text-muted-foreground">quantified.</span>
+            Built for <span className="text-muted-foreground">measurable impact.</span>
           </h3>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-border">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border">
           {metrics.map((metric, i) => (
             <motion.div 
               key={i}
