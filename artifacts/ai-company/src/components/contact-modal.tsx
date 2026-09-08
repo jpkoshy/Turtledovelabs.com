@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, Loader2, ChevronRight, User, Building2, Mail, Briefcase, MessageSquare } from 'lucide-react';
+import { trackEvent } from '@/lib/analytics';
 
 interface FormData {
   name: string;
@@ -92,12 +93,23 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) return;
+    if (!validate()) {
+      trackEvent('contact_form_validation_failed', { location: 'hero' });
+      return;
+    }
+    trackEvent('contact_form_submission_started', {
+      location: 'hero',
+      role_provided: Boolean(form.role.trim()),
+    });
     setSubmitting(true);
     // Simulate network latency — swap for a real endpoint later
     await new Promise(r => setTimeout(r, 1400));
     setSubmitting(false);
     setSubmitted(true);
+    trackEvent('contact_form_submitted', {
+      location: 'hero',
+      role_provided: Boolean(form.role.trim()),
+    });
   };
 
   const handleClose = (val: boolean) => {

@@ -5,6 +5,7 @@ import { ChevronRight } from 'lucide-react';
 import { Link } from 'wouter';
 import heroBg from '../../../attached_assets/generated_images/hero-bg.jpg';
 import ContactModal from '@/components/contact-modal';
+import { trackEvent } from '@/lib/analytics';
 
 export default function Hero() {
   const [contactOpen, setContactOpen] = useState(false);
@@ -62,11 +63,21 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
           >
-            <Button size="lg" className="group w-full sm:w-auto" onClick={() => setContactOpen(true)}>
+            <Button
+              size="lg"
+              className="group w-full sm:w-auto"
+              onClick={() => {
+                trackEvent('contact_form_opened', { location: 'hero' });
+                setContactOpen(true);
+              }}
+            >
               Initialize Protocol
               <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Link href="/architecture">
+            <Link
+              href="/architecture"
+              onClick={() => trackEvent('architecture_viewed', { location: 'hero' })}
+            >
               <Button variant="outline" size="lg" className="w-full sm:w-auto">
                 View Architecture
               </Button>

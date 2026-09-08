@@ -4,6 +4,7 @@ import { Link } from 'wouter';
 import { ArrowLeft, X, Zap, Database, Brain, Network, Cpu, GitBranch, Shield, BarChart3, Radio, FileCode, Globe, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import logo from '@assets/Turtledovelabs_1786244932892.png';
+import { trackEvent } from '@/lib/analytics';
 
 /* ─── Data ──────────────────────────────────────────────────────────────── */
 
@@ -395,7 +396,16 @@ export default function Architecture() {
                             ${dimmed ? 'opacity-30' : 'opacity-100'}
                           `}
                           style={active ? { boxShadow: `0 0 28px ${node.glow}55` } : {}}
-                          onClick={() => setSelected(active ? null : node.id)}
+                          onClick={() => {
+                            if (!active) {
+                              trackEvent('architecture_component_inspected', {
+                                component: node.id,
+                                layer: node.layer,
+                                status: node.detail.status,
+                              });
+                            }
+                            setSelected(active ? null : node.id);
+                          }}
                           onMouseEnter={() => setHovered(node.id)}
                           onMouseLeave={() => setHovered(null)}
                           whileHover={{ scale: 1.01 }}
@@ -590,7 +600,13 @@ export default function Architecture() {
                         initial={{ opacity: 0, y: 6 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 + i * 0.06 }}
-                        onClick={() => setSelected(otherId)}
+                        onClick={() => {
+                          trackEvent('architecture_connection_followed', {
+                            from_component: selectedNode.id,
+                            to_component: otherId,
+                          });
+                          setSelected(otherId);
+                        }}
                       >
                         <OtherIcon className="w-3.5 h-3.5 shrink-0" style={{ color: other.glow }} />
                         <span className="font-mono text-xs text-foreground flex-1">{other.label}</span>
