@@ -40,20 +40,20 @@ function Router() {
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/architecture" component={Architecture} />
-        <Route path="/marketplace" component=MarketplaceHome />
-        <Route path="/marketplace/browse" component=Browse />
-        <Route path="/marketplace/gig/:slug" component=GigDetail />
-        <Route path="/marketplace/seller/:username" component=SellerProfile />
-        <Route path="/marketplace/sell/new" component=SellNew />
-        <Route path="/marketplace/sell/:id/edit" component=SellEdit />
-        <Route path="/marketplace/checkout/:gigId/:tier" component=Checkout />
-        <Route path="/marketplace/orders" component=Orders />
-        <Route path="/marketplace/orders/:id" component=OrderDetail />
-        <Route path="/marketplace/inbox" component=Inbox />
-        <Route path="/marketplace/dashboard/seller" component=SellerDashboard />
-        <Route path="/marketplace/dashboard/buyer" component=BuyerDashboard />
-        <Route path="/marketplace/auth" component=MarketAuth />
-        <Route path="/marketplace/admin" component=MarketAdmin />
+        <Route path="/marketplace" component={MarketplaceHome} />
+        <Route path="/marketplace/browse" component={Browse} />
+        <Route path="/marketplace/gig/:slug" component={GigDetail} />
+        <Route path="/marketplace/seller/:username" component={SellerProfile} />
+        <Route path="/marketplace/sell/new" component={SellNew} />
+        <Route path="/marketplace/sell/:id/edit" component={SellEdit} />
+        <Route path="/marketplace/checkout/:gigId/:tier" component={Checkout} />
+        <Route path="/marketplace/orders" component={Orders} />
+        <Route path="/marketplace/orders/:id" component={OrderDetail} />
+        <Route path="/marketplace/inbox" component={Inbox} />
+        <Route path="/marketplace/dashboard/seller" component={SellerDashboard} />
+        <Route path="/marketplace/dashboard/buyer" component={BuyerDashboard} />
+        <Route path="/marketplace/auth" component={MarketAuth} />
+        <Route path="/marketplace/admin" component={MarketAdmin} />
         <Route component={NotFound} />
       </Switch>
     </RoutedErrorBoundary>
