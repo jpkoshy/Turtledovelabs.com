@@ -100,7 +100,6 @@ export default function Hero() {
         <span>LAT: 37.7749° N</span>
         <span>LNG: 122.4194° W</span>
         <span>STATUS: NOMINAL</span>
-        <span>UPTIME: 99.999%</span>
       </div>
     </section>
   );

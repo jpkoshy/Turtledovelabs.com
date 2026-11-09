@@ -10,12 +10,12 @@ const thesisPoints = [
   {
     icon: ShieldAlert,
     title: "Absolute Sovereignty",
-    description: "Your data is your moat. We deploy entirely within your VPC or bare-metal infrastructure. No API calls to third parties. Zero data leakage."
+    description: "Your data is your moat. We deploy entirely within your VPC or bare-metal infrastructure. No calls to third-party AI APIs, so your data stays where you put it."
   },
   {
     icon: Cpu,
     title: "Agentic Autonomy",
-    description: "Moving beyond chat interfaces to autonomous networks. We build systems that observe, reason, and execute complex multi-step workflows without human intervention."
+    description: "Moving beyond chat interfaces to autonomous networks. We build systems that observe, reason, and execute complex multi-step workflows with human oversight built in where decisions matter."
   }
 ];
 

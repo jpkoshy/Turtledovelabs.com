@@ -28,19 +28,19 @@ export default function DataIntelligence() {
             <div className="grid grid-cols-2 gap-8 mt-12">
               <div>
                 <div className="text-primary text-3xl font-bold font-mono mb-2">&lt; 10ms</div>
-                <div className="text-xs text-muted-foreground font-mono uppercase tracking-widest">Retrieval Latency</div>
+                <div className="text-xs text-muted-foreground font-mono uppercase tracking-widest">Target p99 Retrieval</div>
               </div>
               <div>
-                <div className="text-primary text-3xl font-bold font-mono mb-2">99.9%</div>
-                <div className="text-xs text-muted-foreground font-mono uppercase tracking-widest">Semantic Accuracy</div>
+                <div className="text-primary text-3xl font-bold font-mono mb-2">Hybrid</div>
+                <div className="text-xs text-muted-foreground font-mono uppercase tracking-widest">BM25 + Dense Search</div>
               </div>
               <div>
-                <div className="text-primary text-3xl font-bold font-mono mb-2">PBs</div>
-                <div className="text-xs text-muted-foreground font-mono uppercase tracking-widest">Scale Capacity</div>
+                <div className="text-primary text-3xl font-bold font-mono mb-2">10 TB/day</div>
+                <div className="text-xs text-muted-foreground font-mono uppercase tracking-widest">Design Ingestion</div>
               </div>
               <div>
                 <div className="text-primary text-3xl font-bold font-mono mb-2">Zero</div>
-                <div className="text-xs text-muted-foreground font-mono uppercase tracking-widest">Data Leakage</div>
+                <div className="text-xs text-muted-foreground font-mono uppercase tracking-widest">Third-Party API Calls</div>
               </div>
             </div>
             <p className="mt-8 border-l border-primary/40 pl-4 text-muted-foreground font-mono text-sm leading-relaxed">

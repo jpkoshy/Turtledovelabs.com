@@ -9,6 +9,7 @@ import AutonomousAgents from '@/components/sections/autonomous-agents';
 import Metrics from '@/components/sections/metrics';
 import CTA from '@/components/sections/cta';
 import HowItWorks from '@/components/sections/how-it-works';
+import MarketContext from '@/components/sections/market-context';
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
       <main className="flex-1">
         <Hero />
         <Thesis />
+        <MarketContext />
         <Capabilities />
         <CustomModels />
         <DataIntelligence />
