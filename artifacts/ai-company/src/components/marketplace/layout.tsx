@@ -1,7 +1,13 @@
 import type { ReactNode } from 'react';
-import Navbar from '@/components/layout/navbar';
-import Footer from '@/components/layout/footer';
-// STUB — owned by agent B2. Build the marketplace header (search, categories, sell, inbox, orders, user menu) and footer.
+import MarketplaceHeader from './shell/header';
+import MarketplaceFooter from './shell/footer';
+
 export default function MarketplaceLayout({ children }: { children: ReactNode }) {
-  return (<><Navbar /><main className="flex-1 pt-24">{children}</main><Footer /></>);
+  return (
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <MarketplaceHeader />
+      <main className="flex-1">{children}</main>
+      <MarketplaceFooter />
+    </div>
+  );
 }

@@ -35,6 +35,7 @@ export default function Navbar() {
           <a href="#thesis" className="text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest">Thesis</a>
           <a href="#capabilities" className="text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest">Platform</a>
           <a href="#metrics" className="text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest">Impact</a>
+          <Link href="/marketplace" className="text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest">Marketplace</Link>
         </nav>
 
         <div className="flex items-center gap-4">
