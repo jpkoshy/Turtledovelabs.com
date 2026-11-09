@@ -2,29 +2,1274 @@ openapi: 3.1.0
 info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
-  version: 0.1.0
-  description: API specification
+  version: 0.3.0
+  description: Turtledove Labs marketplace API. JSON is camelCase; money is integer cents (USD).
 servers:
-  - url: /api
-    description: Base API path
+- url: /api
+  description: Base API path
 tags:
-  - name: health
-    description: Health operations
+- name: health
+- name: auth
+- name: users
+- name: categories
+- name: gigs
+- name: search
+- name: orders
+- name: reviews
+- name: messages
+- name: payments
+- name: disputes
+- name: admin
+- name: notifications
 paths:
   /healthz:
     get:
       operationId: healthCheck
-      tags: [health]
+      tags:
+      - health
       summary: Health check
       description: Returns server health status
       responses:
-        "200":
+        '200':
           description: Healthy
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HealthStatus"
+                $ref: '#/components/schemas/HealthStatus'
+  /auth/signup:
+    post:
+      operationId: signup
+      tags:
+      - auth
+      summary: Create an account and start a session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResult'
+        '400': &id001
+          $ref: '#/components/responses/Error'
+        '409': *id001
+  /auth/login:
+    post:
+      operationId: login
+      tags:
+      - auth
+      summary: Log in
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResult'
+        '400': *id001
+        '401': *id001
+  /auth/logout:
+    post:
+      operationId: logout
+      tags:
+      - auth
+      summary: Log out (clears session cookie)
+      responses:
+        '204':
+          description: Logged out
+  /auth/me:
+    get:
+      operationId: getMe
+      tags:
+      - auth
+      summary: Current user
+      security: &id002
+      - cookieAuth: []
+      - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEnvelope'
+        '401': *id001
+  /users/me:
+    get:
+      operationId: getCurrentUser
+      tags:
+      - users
+      summary: Current user profile
+      security: *id002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEnvelope'
+        '401': *id001
+    patch:
+      operationId: updateMe
+      tags:
+      - users
+      summary: Update own profile
+      security: *id002
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEnvelope'
+        '400': *id001
+        '401': *id001
+  /users/{username}:
+    get:
+      operationId: getUserByUsername
+      tags:
+      - users
+      summary: Public profile (email only visible to self)
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEnvelope'
+        '404': *id001
+    patch:
+      operationId: updateUserByUsername
+      tags:
+      - users
+      summary: Update a profile by username (self or admin)
+      security: *id002
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEnvelope'
+        '400': *id001
+        '401': *id001
+        '403': *id001
+        '404': *id001
+  /categories:
+    get:
+      operationId: listCategories
+      tags:
+      - categories
+      summary: List categories
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+  /gigs/mine:
+    get:
+      operationId: listMyGigs
+      tags:
+      - gigs
+      summary: List own gigs (all statuses)
+      security: *id002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Gig'
+        '401': *id001
+  /gigs:
+    post:
+      operationId: createGig
+      tags:
+      - gigs
+      summary: Create a gig (seller)
+      security: *id002
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GigInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Gig'
+        '400': *id001
+        '401': *id001
+        '403': *id001
+        '409': *id001
+  /gigs/{idOrSlug}:
+    get:
+      operationId: getGig
+      tags:
+      - gigs
+      summary: Get gig by slug (public if active; owner/admin any status)
+      parameters:
+      - name: idOrSlug
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Gig'
+        '404': *id001
+    patch:
+      operationId: updateGig
+      tags:
+      - gigs
+      summary: Update a gig by id (owner/admin)
+      security: *id002
+      parameters:
+      - name: idOrSlug
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GigUpdateInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Gig'
+        '400': *id001
+        '401': *id001
+        '403': *id001
+        '404': *id001
+        '409': *id001
+    delete:
+      operationId: deleteGig
+      tags:
+      - gigs
+      summary: Delete a gig by id (owner/admin)
+      security: *id002
+      parameters:
+      - name: idOrSlug
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Deleted
+        '401': *id001
+        '403': *id001
+        '404': *id001
+  /search/gigs:
+    get:
+      operationId: searchGigs
+      tags:
+      - search
+      summary: Search active gigs
+      parameters:
+      - name: q
+        in: query
+        schema:
+          type: string
+      - name: categoryId
+        in: query
+        schema:
+          type: string
+      - name: minPriceCents
+        in: query
+        schema:
+          type: number
+          minimum: 0
+      - name: maxPriceCents
+        in: query
+        schema:
+          type: number
+          minimum: 0
+      - name: maxDeliveryDays
+        in: query
+        schema:
+          type: number
+          minimum: 1
+      - name: minRating
+        in: query
+        schema:
+          type: number
+          minimum: 0
+          maximum: 5
+      - name: sellerLevel
+        in: query
+        schema:
+          $ref: '#/components/schemas/UserLevel'
+      - name: sort
+        in: query
+        schema:
+          type: string
+          enum:
+          - relevance
+          - rating
+          - price_asc
+          - price_desc
+          - newest
+          - orders
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GigPage'
+  /search/suggest:
+    get:
+      operationId: suggestSearch
+      tags:
+      - search
+      summary: Autocomplete suggestions
+      parameters:
+      - name: q
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchSuggestions'
+  /orders:
+    get:
+      operationId: listOrders
+      tags:
+      - orders
+      summary: List own orders
+      security: *id002
+      parameters:
+      - name: as
+        in: query
+        schema:
+          type: string
+          enum:
+          - buyer
+          - seller
+          default: buyer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderList'
+        '401': *id001
+    post:
+      operationId: createOrder
+      tags:
+      - orders
+      summary: Place an order (buyer; price derived server-side)
+      security: *id002
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderEnvelope'
+        '400': *id001
+        '401': *id001
+        '403': *id001
+        '404': *id001
+  /orders/{id}:
+    get:
+      operationId: getOrder
+      tags:
+      - orders
+      summary: Get an order (participants/admin)
+      security: *id002
+      parameters:
+      - &id003
+        $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderEnvelope'
+        '401': *id001
+        '403': *id001
+        '404': *id001
+  /orders/{id}/deliver:
+    post:
+      operationId: deliverOrder
+      tags:
+      - orders
+      summary: Seller delivers work
+      security: *id002
+      parameters:
+      - *id003
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeliverInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderEnvelope'
+        '400': *id001
+        '403': *id001
+        '404': *id001
+        '409': *id001
+  /orders/{id}/revision:
+    post:
+      operationId: requestRevision
+      tags:
+      - orders
+      summary: Buyer requests a revision
+      security: *id002
+      parameters:
+      - *id003
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderEnvelope'
+        '400': *id001
+        '403': *id001
+        '404': *id001
+        '409': *id001
+  /orders/{id}/complete:
+    post:
+      operationId: completeOrder
+      tags:
+      - orders
+      summary: Buyer accepts delivery
+      security: *id002
+      parameters:
+      - *id003
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderEnvelope'
+        '403': *id001
+        '404': *id001
+        '409': *id001
+  /orders/{id}/cancel:
+    post:
+      operationId: cancelOrder
+      tags:
+      - orders
+      summary: Cancel an order
+      security: *id002
+      parameters:
+      - *id003
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderEnvelope'
+        '403': *id001
+        '404': *id001
+        '409': *id001
+  /reviews:
+    get:
+      operationId: listReviews
+      tags:
+      - reviews
+      summary: List reviews for a gig
+      parameters:
+      - name: gigId
+        in: query
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Review'
+        '400': *id001
+    post:
+      operationId: createReview
+      tags:
+      - reviews
+      summary: Review a completed order (buyer)
+      security: *id002
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '400': *id001
+        '401': *id001
+        '403': *id001
+        '409': *id001
+  /reviews/{id}/reply:
+    post:
+      operationId: replyToReview
+      tags:
+      - reviews
+      summary: Seller replies to a review
+      security: *id002
+      parameters:
+      - *id003
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReplyInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '400': *id001
+        '401': *id001
+        '403': *id001
+        '404': *id001
+        '409': *id001
+  /messages/stream:
+    get:
+      operationId: streamMessages
+      tags:
+      - messages
+      summary: 'Server-sent events: ''message'' and ''read'' events'
+      security: *id002
+      responses:
+        '200':
+          description: text/event-stream
+          content:
+            text/event-stream:
+              schema:
+                type: string
+        '401': *id001
+  /messages/conversations:
+    get:
+      operationId: listConversations
+      tags:
+      - messages
+      summary: List own conversations
+      security: *id002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationList'
+        '401': *id001
+    post:
+      operationId: startConversation
+      tags:
+      - messages
+      summary: Start (or reuse) a conversation
+      security: *id002
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartConversationInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationEnvelope'
+        '400': *id001
+        '401': *id001
+  /messages/conversations/{id}:
+    get:
+      operationId: getConversation
+      tags:
+      - messages
+      summary: 'Conversation with a page of messages (query: limit, since, before; not typed here)'
+      security: *id002
+      parameters:
+      - *id003
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationThread'
+        '400': *id001
+        '401': *id001
+        '403': *id001
+        '404': *id001
+    post:
+      operationId: sendMessage
+      tags:
+      - messages
+      summary: Send a message
+      security: *id002
+      parameters:
+      - *id003
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendMessageInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageEnvelope'
+        '400': *id001
+        '401': *id001
+        '403': *id001
+        '404': *id001
+  /messages/conversations/{id}/read:
+    post:
+      operationId: markConversationRead
+      tags:
+      - messages
+      summary: Mark conversation read
+      security: *id002
+      parameters:
+      - *id003
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '401': *id001
+        '403': *id001
+        '404': *id001
+  /payments/charge:
+    post:
+      operationId: chargeOrder
+      tags:
+      - payments
+      summary: Pay for an order (held in escrow)
+      security: *id002
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChargeInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400': *id001
+        '401': *id001
+        '403': *id001
+        '404': *id001
+        '409': *id001
+  /payments/release/{orderId}:
+    post:
+      operationId: releaseEscrow
+      tags:
+      - payments
+      summary: Release escrow to seller (buyer/admin)
+      security: *id002
+      parameters:
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '401': *id001
+        '403': *id001
+        '404': *id001
+        '409': *id001
+  /payments/refund/{orderId}:
+    post:
+      operationId: refundEscrow
+      tags:
+      - payments
+      summary: Refund escrow to buyer (seller/admin)
+      security: *id002
+      parameters:
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefundInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '401': *id001
+        '403': *id001
+        '404': *id001
+        '409': *id001
+  /payments/transactions:
+    get:
+      operationId: listTransactions
+      tags:
+      - payments
+      summary: List own transactions
+      security: *id002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+        '400': *id001
+        '401': *id001
+  /payments/balance:
+    get:
+      operationId: getBalance
+      tags:
+      - payments
+      summary: Seller balance
+      security: *id002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Balance'
+        '401': *id001
+  /payments/escrow/{orderId}:
+    get:
+      operationId: getEscrow
+      tags:
+      - payments
+      summary: Escrow state of an order
+      security: *id002
+      parameters:
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EscrowInfo'
+        '401': *id001
+        '403': *id001
+        '404': *id001
+  /payments/payout:
+    post:
+      operationId: requestPayout
+      tags:
+      - payments
+      summary: Request a payout (seller)
+      security: *id002
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayoutInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400': *id001
+        '401': *id001
+        '409': *id001
+  /disputes:
+    get:
+      operationId: listDisputes
+      tags:
+      - disputes
+      summary: List own disputes (all for admin)
+      security: *id002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisputeList'
+        '401': *id001
+    post:
+      operationId: openDispute
+      tags:
+      - disputes
+      summary: Open a dispute on an order
+      security: *id002
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DisputeInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisputeEnvelope'
+        '400': *id001
+        '401': *id001
+        '403': *id001
+        '404': *id001
+        '409': *id001
+  /disputes/{id}:
+    get:
+      operationId: getDispute
+      tags:
+      - disputes
+      summary: Get a dispute
+      security: *id002
+      parameters:
+      - *id003
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisputeEnvelope'
+        '401': *id001
+        '403': *id001
+        '404': *id001
+  /disputes/{id}/resolve:
+    post:
+      operationId: resolveDispute
+      tags:
+      - disputes
+      summary: Resolve a dispute (admin)
+      security: *id002
+      parameters:
+      - *id003
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResolveDisputeInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResolveDisputeResult'
+        '400': *id001
+        '401': *id001
+        '403': *id001
+        '404': *id001
+        '409': *id001
+  /admin/gigs:
+    get:
+      operationId: adminListGigs
+      tags:
+      - admin
+      summary: List gigs by status for moderation
+      security: *id002
+      parameters:
+      - name: status
+        in: query
+        schema:
+          $ref: '#/components/schemas/GigStatus'
+      - name: limit
+        in: query
+        schema:
+          type: number
+      - name: offset
+        in: query
+        schema:
+          type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminGigList'
+        '401': *id001
+        '403': *id001
+  /admin/gigs/{id}/moderate:
+    post:
+      operationId: moderateGig
+      tags:
+      - admin
+      summary: Approve, reject or pause a gig
+      security: *id002
+      parameters:
+      - *id003
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModerateGigInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GigEnvelope'
+        '400': *id001
+        '401': *id001
+        '403': *id001
+        '404': *id001
+  /admin/users:
+    get:
+      operationId: adminListUsers
+      tags:
+      - admin
+      summary: List users
+      security: *id002
+      parameters:
+      - name: q
+        in: query
+        schema:
+          type: string
+      - name: role
+        in: query
+        schema:
+          $ref: '#/components/schemas/UserRole'
+      - name: limit
+        in: query
+        schema:
+          type: number
+      - name: offset
+        in: query
+        schema:
+          type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserList'
+        '401': *id001
+        '403': *id001
+  /admin/users/{id}/suspend:
+    post:
+      operationId: suspendUser
+      tags:
+      - admin
+      summary: Suspend or reinstate a user
+      security: *id002
+      parameters:
+      - *id003
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SuspendUserInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserEnvelope'
+        '400': *id001
+        '401': *id001
+        '403': *id001
+        '404': *id001
+  /admin/stats:
+    get:
+      operationId: getAdminStats
+      tags:
+      - admin
+      summary: Platform statistics
+      security: *id002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminStats'
+        '401': *id001
+        '403': *id001
+  /admin/audit:
+    get:
+      operationId: getAdminAudit
+      tags:
+      - admin
+      summary: Admin audit log
+      security: *id002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditList'
+        '401': *id001
+        '403': *id001
+  /notifications:
+    get:
+      operationId: listNotifications
+      tags:
+      - notifications
+      summary: List own notifications
+      security: *id002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+        '401': *id001
+  /notifications/read-all:
+    post:
+      operationId: markAllNotificationsRead
+      tags:
+      - notifications
+      summary: Mark all read
+      security: *id002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+        '401': *id001
+  /notifications/favorites:
+    get:
+      operationId: listFavorites
+      tags:
+      - notifications
+      summary: List favourites
+      security: *id002
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Favorite'
+        '401': *id001
+  /notifications/favorites/{gigId}:
+    put:
+      operationId: addFavorite
+      tags:
+      - notifications
+      summary: Favourite a gig
+      security: *id002
+      parameters:
+      - name: gigId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Favorite'
+        '400': *id001
+        '401': *id001
+    delete:
+      operationId: removeFavorite
+      tags:
+      - notifications
+      summary: Remove a favourite
+      security: *id002
+      parameters:
+      - name: gigId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Removed
+        '400': *id001
+        '401': *id001
+  /notifications/{id}/read:
+    post:
+      operationId: markNotificationRead
+      tags:
+      - notifications
+      summary: Mark one read
+      security: *id002
+      parameters:
+      - *id003
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+        '400': *id001
+        '401': *id001
+        '404': *id001
 components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: tdl_session
+    bearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    Page:
+      name: page
+      in: query
+      schema:
+        type: number
+        minimum: 1
+        default: 1
+    PageSize:
+      name: pageSize
+      in: query
+      schema:
+        type: number
+        minimum: 1
+        maximum: 100
+        default: 24
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   schemas:
     HealthStatus:
       type: object
@@ -32,5 +1277,941 @@ components:
         status:
           type: string
       required:
-        - status
-
+      - status
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        details: {}
+        issues: {}
+      required:
+      - error
+    UserRole:
+      type: string
+      enum:
+      - buyer
+      - seller
+      - admin
+    UserLevel:
+      type: string
+      enum:
+      - new
+      - level1
+      - level2
+      - top
+    GigStatus:
+      type: string
+      enum:
+      - draft
+      - active
+      - paused
+      - rejected
+    PackageTier:
+      type: string
+      enum:
+      - basic
+      - standard
+      - premium
+    OrderStatus:
+      type: string
+      enum:
+      - pending
+      - active
+      - delivered
+      - revision
+      - completed
+      - cancelled
+      - disputed
+    TransactionType:
+      type: string
+      enum:
+      - charge
+      - escrow_release
+      - payout
+      - refund
+      - fee
+    DisputeStatus:
+      type: string
+      enum:
+      - open
+      - resolved_buyer
+      - resolved_seller
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        username:
+          type: string
+        displayName:
+          type: string
+        avatarUrl:
+          type: string
+        role:
+          $ref: '#/components/schemas/UserRole'
+        bio:
+          type: string
+        country:
+          type: string
+        languages:
+          type: array
+          items:
+            type: string
+        skills:
+          type: array
+          items:
+            type: string
+        level:
+          $ref: '#/components/schemas/UserLevel'
+        createdAt:
+          type: string
+      required:
+      - id
+      - email
+      - username
+      - displayName
+      - role
+      - languages
+      - skills
+      - level
+      - createdAt
+    AuthResult:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        token:
+          type: string
+          description: Bearer token (also set as httpOnly cookie tdl_session)
+      required:
+      - user
+      - token
+    RegisterInput:
+      type: object
+      properties:
+        email:
+          type: string
+        username:
+          type: string
+        displayName:
+          type: string
+        password:
+          type: string
+          minLength: 8
+        role:
+          type: string
+          enum:
+          - buyer
+          - seller
+      required:
+      - email
+      - username
+      - displayName
+      - password
+    LoginInput:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+      - email
+      - password
+    UpdateProfileInput:
+      type: object
+      properties:
+        displayName:
+          type: string
+        avatarUrl:
+          type: string
+        bio:
+          type: string
+        country:
+          type: string
+        languages:
+          type: array
+          items:
+            type: string
+        skills:
+          type: array
+          items:
+            type: string
+        role:
+          type: string
+          enum:
+          - buyer
+          - seller
+    Category:
+      type: object
+      properties:
+        id:
+          type: string
+        slug:
+          type: string
+        name:
+          type: string
+        parentId:
+          type: string
+        icon:
+          type: string
+      required:
+      - id
+      - slug
+      - name
+      - icon
+    Package:
+      type: object
+      properties:
+        tier:
+          $ref: '#/components/schemas/PackageTier'
+        name:
+          type: string
+        description:
+          type: string
+        priceCents:
+          type: number
+          minimum: 0
+        deliveryDays:
+          type: number
+          minimum: 1
+        revisions:
+          type: number
+          minimum: 0
+        features:
+          type: array
+          items:
+            type: string
+      required:
+      - tier
+      - name
+      - description
+      - priceCents
+      - deliveryDays
+      - revisions
+      - features
+    Faq:
+      type: object
+      properties:
+        question:
+          type: string
+        answer:
+          type: string
+      required:
+      - question
+      - answer
+    Gig:
+      type: object
+      properties:
+        id:
+          type: string
+        sellerId:
+          type: string
+        categoryId:
+          type: string
+        slug:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        images:
+          type: array
+          items:
+            type: string
+        status:
+          $ref: '#/components/schemas/GigStatus'
+        ratingAvg:
+          type: number
+        ratingCount:
+          type: number
+        ordersCompleted:
+          type: number
+        packages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Package'
+          minItems: 3
+          maxItems: 3
+        faqs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Faq'
+        createdAt:
+          type: string
+      required:
+      - id
+      - sellerId
+      - categoryId
+      - slug
+      - title
+      - description
+      - tags
+      - images
+      - status
+      - ratingAvg
+      - ratingCount
+      - ordersCompleted
+      - packages
+      - faqs
+      - createdAt
+    GigInput:
+      type: object
+      properties:
+        categoryId:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        images:
+          type: array
+          items:
+            type: string
+        status:
+          $ref: '#/components/schemas/GigStatus'
+        packages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Package'
+          minItems: 3
+          maxItems: 3
+        faqs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Faq'
+        slug:
+          type: string
+      required:
+      - categoryId
+      - title
+      - description
+      - packages
+    GigUpdateInput:
+      type: object
+      properties:
+        categoryId:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        images:
+          type: array
+          items:
+            type: string
+        status:
+          $ref: '#/components/schemas/GigStatus'
+        packages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Package'
+        faqs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Faq'
+    GigPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Gig'
+        total:
+          type: number
+        page:
+          type: number
+        pageSize:
+          type: number
+      required:
+      - items
+      - total
+      - page
+      - pageSize
+    Delivery:
+      type: object
+      properties:
+        message:
+          type: string
+        files:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+        id:
+          type: string
+        revisionNote:
+          type: string
+      required:
+      - message
+      - createdAt
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        gigId:
+          type: string
+        buyerId:
+          type: string
+        sellerId:
+          type: string
+        tier:
+          $ref: '#/components/schemas/PackageTier'
+        priceCents:
+          type: number
+        feeCents:
+          type: number
+          description: Platform fee (20% of price)
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+        requirements:
+          type: string
+        deliveries:
+          type: array
+          items:
+            $ref: '#/components/schemas/Delivery'
+        dueAt:
+          type: string
+        createdAt:
+          type: string
+        revisionsAllowed: &id004
+          type: number
+        revisionsUsed: *id004
+      required:
+      - id
+      - gigId
+      - buyerId
+      - sellerId
+      - tier
+      - priceCents
+      - feeCents
+      - status
+      - deliveries
+      - dueAt
+      - createdAt
+    CreateOrderInput:
+      type: object
+      properties:
+        gigId:
+          type: string
+        tier:
+          $ref: '#/components/schemas/PackageTier'
+        requirements:
+          type: string
+      required:
+      - gigId
+      - tier
+    DeliverInput:
+      type: object
+      properties:
+        message:
+          type: string
+        files:
+          type: array
+          items:
+            type: string
+      required:
+      - message
+    NoteInput:
+      type: object
+      properties:
+        note:
+          type: string
+      required:
+      - note
+    Review:
+      type: object
+      properties:
+        id:
+          type: string
+        orderId:
+          type: string
+        gigId:
+          type: string
+        buyerId:
+          type: string
+        rating:
+          type: number
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+        sellerReply:
+          type: string
+        createdAt:
+          type: string
+      required:
+      - id
+      - orderId
+      - gigId
+      - buyerId
+      - rating
+      - comment
+      - createdAt
+    ReviewInput:
+      type: object
+      properties:
+        orderId:
+          type: string
+        rating:
+          type: number
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+        gigId:
+          type: string
+      required:
+      - orderId
+      - rating
+      - comment
+    ReplyInput:
+      type: object
+      properties:
+        reply:
+          type: string
+      required:
+      - reply
+    Conversation:
+      type: object
+      properties:
+        id:
+          type: string
+        participantIds:
+          type: array
+          items:
+            type: string
+          minItems: 2
+          maxItems: 2
+        gigId:
+          type: string
+        lastMessageAt:
+          type: string
+        unreadCount: *id004
+        otherUserId:
+          type: string
+        lastMessage:
+          $ref: '#/components/schemas/Message'
+      required:
+      - id
+      - participantIds
+      - lastMessageAt
+    StartConversationInput:
+      type: object
+      properties:
+        recipientId:
+          type: string
+        gigId:
+          type: string
+      required:
+      - recipientId
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+        conversationId:
+          type: string
+        senderId:
+          type: string
+        body:
+          type: string
+        createdAt:
+          type: string
+      required:
+      - id
+      - conversationId
+      - senderId
+      - body
+      - createdAt
+    SendMessageInput:
+      type: object
+      properties:
+        body:
+          type: string
+          minLength: 1
+      required:
+      - body
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+        orderId:
+          type: string
+        type:
+          $ref: '#/components/schemas/TransactionType'
+        amountCents:
+          type: number
+        status:
+          type: string
+        createdAt:
+          type: string
+        userId:
+          type: string
+        counterpartyId:
+          type: string
+        feeCents: *id004
+        provider:
+          type: string
+      required:
+      - id
+      - type
+      - amountCents
+      - status
+      - createdAt
+    Dispute:
+      type: object
+      properties:
+        id:
+          type: string
+        orderId:
+          type: string
+        openedBy:
+          type: string
+        reason:
+          type: string
+        status:
+          $ref: '#/components/schemas/DisputeStatus'
+        resolution:
+          type: string
+      required:
+      - id
+      - orderId
+      - openedBy
+      - reason
+      - status
+    DisputeInput:
+      type: object
+      properties:
+        orderId:
+          type: string
+        reason:
+          type: string
+          minLength: 10
+      required:
+      - orderId
+      - reason
+    ResolveDisputeInput:
+      type: object
+      properties:
+        outcome:
+          type: string
+          enum:
+          - buyer
+          - seller
+        resolution:
+          type: string
+      required:
+      - outcome
+      - resolution
+    ModerateGigInput:
+      type: object
+      properties:
+        action:
+          type: string
+          enum:
+          - approve
+          - reject
+          - pause
+        note:
+          type: string
+      required:
+      - action
+    AdminStats:
+      type: object
+      properties:
+        gmvCents: *id004
+        feesCents: *id004
+        orders: *id004
+        ordersByStatus:
+          type: object
+          additionalProperties: *id004
+        users: *id004
+        usersByRole:
+          type: object
+          additionalProperties: *id004
+        openDisputes: *id004
+      required:
+      - gmvCents
+      - feesCents
+      - orders
+      - users
+      - openDisputes
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        kind:
+          type: string
+        body:
+          type: string
+        read:
+          type: boolean
+        createdAt:
+          type: string
+      required:
+      - id
+      - userId
+      - kind
+      - body
+      - read
+      - createdAt
+    Favorite:
+      type: object
+      properties:
+        userId:
+          type: string
+        gigId:
+          type: string
+      required:
+      - userId
+      - gigId
+    UserEnvelope:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+      required:
+      - user
+    OrderEnvelope:
+      type: object
+      properties:
+        order:
+          $ref: '#/components/schemas/Order'
+      required:
+      - order
+    OrderList:
+      type: object
+      properties:
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+      required:
+      - orders
+    ConversationList:
+      type: object
+      properties:
+        conversations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Conversation'
+      required:
+      - conversations
+    ConversationEnvelope:
+      type: object
+      properties:
+        conversation:
+          $ref: '#/components/schemas/Conversation'
+      required:
+      - conversation
+    ConversationThread:
+      type: object
+      properties:
+        conversation:
+          $ref: '#/components/schemas/Conversation'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+        hasMore:
+          type: boolean
+      required:
+      - conversation
+      - messages
+      - hasMore
+    MessageEnvelope:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/Message'
+      required:
+      - message
+    OkResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      required:
+      - ok
+    ChargeInput:
+      type: object
+      properties:
+        orderId:
+          type: string
+        paymentMethod:
+          type: string
+        idempotencyKey:
+          type: string
+      required:
+      - orderId
+    RefundInput:
+      type: object
+      properties:
+        reason:
+          type: string
+    Balance:
+      type: object
+      properties:
+        availableCents: *id004
+        pendingCents: *id004
+        paidOutCents: *id004
+        lifetimeEarnedCents: *id004
+      required:
+      - availableCents
+      - pendingCents
+      - paidOutCents
+      - lifetimeEarnedCents
+    EscrowInfo:
+      type: object
+      properties:
+        orderId:
+          type: string
+        state:
+          type: string
+          description: Escrow state, e.g. none/held/released/refunded
+      required:
+      - orderId
+      - state
+    PayoutInput:
+      type: object
+      properties:
+        amountCents:
+          type: number
+          minimum: 1
+        idempotencyKey:
+          type: string
+      required:
+      - amountCents
+      - idempotencyKey
+    DisputeEnvelope:
+      type: object
+      properties:
+        dispute:
+          $ref: '#/components/schemas/Dispute'
+      required:
+      - dispute
+    DisputeList:
+      type: object
+      properties:
+        disputes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Dispute'
+      required:
+      - disputes
+    ResolveDisputeResult:
+      type: object
+      properties:
+        dispute:
+          $ref: '#/components/schemas/Dispute'
+        settlement:
+          type: string
+          enum:
+          - settled
+          - failed
+      required:
+      - dispute
+      - settlement
+    GigEnvelope:
+      type: object
+      properties:
+        gig:
+          $ref: '#/components/schemas/Gig'
+      required:
+      - gig
+    AdminGigList:
+      type: object
+      properties:
+        gigs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Gig'
+      required:
+      - gigs
+    AdminUser:
+      allOf:
+      - $ref: '#/components/schemas/User'
+      - type: object
+        properties:
+          suspended:
+            type: boolean
+        required:
+        - suspended
+    AdminUserList:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminUser'
+      required:
+      - users
+    AdminUserEnvelope:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/AdminUser'
+      required:
+      - user
+    SuspendUserInput:
+      type: object
+      properties:
+        suspended:
+          type: boolean
+          default: true
+        reason:
+          type: string
+      required:
+      - reason
+    AuditList:
+      type: object
+      properties:
+        entries:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      required:
+      - entries
+    SearchSuggestions:
+      type: object
+      properties:
+        suggestions:
+          type: array
+          items:
+            type: object
+            properties:
+              text:
+                type: string
+              kind:
+                type: string
+                enum:
+                - gig
+                - tag
+            required:
+            - text
+            - kind
+      required:
+      - suggestions
