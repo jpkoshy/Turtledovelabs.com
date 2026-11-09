@@ -13,6 +13,7 @@ import {
   requestPayout,
 } from "../lib/payments";
 import { logger } from "../lib/logger";
+import { activateOrder } from "./orders";
 
 const router: IRouter = Router();
 
@@ -87,6 +88,14 @@ router.post("/charge", async (req, res) => {
       paymentMethod: body.data.paymentMethod,
       idempotencyKey: body.data.idempotencyKey ? `charge:${order.id}:${body.data.idempotencyKey}` : undefined,
     });
+    // Funds are held: move the order from pending to active (idempotent for retried charges).
+    if (order.status === "pending") {
+      try {
+        await activateOrder(order.id);
+      } catch (err) {
+        logger.error({ err, orderId: order.id }, "Failed to activate order after charge");
+      }
+    }
     res.status(201).json(serialize(tx));
   } catch (e) {
     fail(res, e);
