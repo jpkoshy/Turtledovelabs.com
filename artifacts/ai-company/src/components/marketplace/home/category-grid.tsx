@@ -25,7 +25,7 @@ export function CategoryGrid() {
           {cats.map((c) => {
             const Icon = ICONS[c.icon] ?? Sparkles;
             return (
-              <Link key={c.id} href={`/marketplace/browse?category=${encodeURIComponent(c.slug)}`} className="flex flex-col items-center gap-2 rounded-lg border border-border bg-card p-4 text-center hover:border-primary transition-colors">
+              <Link key={c.id} href={`/marketplace/browse?category=${encodeURIComponent(c.id)}`} className="flex flex-col items-center gap-2 rounded-lg border border-border bg-card p-4 text-center hover:border-primary transition-colors">
                 <Icon className="h-6 w-6 text-primary" />
                 <span className="text-sm font-medium">{c.name}</span>
               </Link>

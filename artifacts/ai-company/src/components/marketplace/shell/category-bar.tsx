@@ -11,7 +11,7 @@ export default function CategoryBar() {
     <div className="hidden md:block border-t border-border">
       <nav aria-label="Categories" className="container mx-auto px-6 md:px-12 flex gap-6 overflow-x-auto whitespace-nowrap py-2 font-mono text-xs [scrollbar-width:none]">
         {top.map((c) => (
-          <Link key={c.id} href={`/marketplace/browse?categoryId=${encodeURIComponent(c.id)}`} className="text-muted-foreground hover:text-primary transition-colors">
+          <Link key={c.id} href={`/marketplace/browse?category=${encodeURIComponent(c.id)}`} className="text-muted-foreground hover:text-primary transition-colors">
             {c.name}
           </Link>
         ))}

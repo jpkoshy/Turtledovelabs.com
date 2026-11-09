@@ -58,7 +58,7 @@ export default function MarketplaceHeader() {
                 <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Categories</div>
                 <div className="flex flex-col gap-2">
                   {cats.filter((c) => !c.parentId).map((c) => (
-                    <Link key={c.id} href={`/marketplace/browse?categoryId=${encodeURIComponent(c.id)}`} onClick={() => setOpen(false)} className="text-muted-foreground">{c.name}</Link>
+                    <Link key={c.id} href={`/marketplace/browse?category=${encodeURIComponent(c.id)}`} onClick={() => setOpen(false)} className="text-muted-foreground">{c.name}</Link>
                   ))}
                 </div>
               </div>
