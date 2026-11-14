@@ -1,14 +1,19 @@
 import { useState } from 'react';
+import { usePageMeta } from '@/lib/page-meta';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'wouter';
+import { Link, useSearch } from 'wouter';
 import { ArrowLeft, X, Zap, Database, Brain, Network, Cpu, GitBranch, Shield, BarChart3, Radio, FileCode, Globe, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import logo from '@assets/Turtledovelabs_1786244932892.png';
+import logo from '@/assets/logo.svg';
+import { useContact } from '@/components/contact-provider';
 import { trackEvent } from '@/lib/analytics';
 
 /* ─── Data ──────────────────────────────────────────────────────────────── */
 
 type NodeId = string;
+
+// What a component means for an engagement, not a product release stage.
+type Status = 'core' | 'optional' | 'advanced';
 
 interface ArchNode {
   id: NodeId;
@@ -22,7 +27,7 @@ interface ArchNode {
     title: string;
     description: string;
     specs: string[];
-    status: 'active' | 'beta' | 'enterprise';
+    status: Status;
   };
 }
 
@@ -46,8 +51,8 @@ const NODES: ArchNode[] = [
     detail: {
       title: 'Structured Data Sources',
       description: 'Ingest from relational databases, data warehouses, and flat-file exports. Schema-aware parsing with automatic type inference and null-handling.',
-      specs: ['PostgreSQL, MySQL, Redshift', 'S3, GCS, Azure Blob', 'Streaming CDC via Debezium', 'Up to 10 TB/day ingestion'],
-      status: 'active',
+      specs: ['PostgreSQL, MySQL, Redshift', 'S3, GCS, Azure Blob', 'Streaming CDC via Debezium', 'Designed for 10 TB/day ingestion'],
+      status: 'core',
     },
   },
   {
@@ -60,9 +65,9 @@ const NODES: ArchNode[] = [
     glow: '#1a5fff',
     detail: {
       title: 'Unstructured Data Sources',
-      description: 'PDF, DOCX, email threads, call recordings, and video transcripts processed through our proprietary multi-modal pre-processing pipeline.',
+      description: 'PDF, DOCX, email threads, call recordings, and video transcripts processed through a multi-modal pre-processing pipeline.',
       specs: ['OCR + layout parsing', 'Whisper-class ASR', 'Video frame sampling', 'Metadata extraction'],
-      status: 'active',
+      status: 'core',
     },
   },
   {
@@ -76,8 +81,8 @@ const NODES: ArchNode[] = [
     detail: {
       title: 'Event Stream Ingestion',
       description: 'Sub-100ms latency ingestion for high-throughput event streams. Exactly-once semantics with back-pressure control and automatic schema registry.',
-      specs: ['Apache Kafka native', 'AWS Kinesis + Firehose', 'WebSocket event taps', '<50ms p99 latency'],
-      status: 'active',
+      specs: ['Apache Kafka native', 'AWS Kinesis + Firehose', 'WebSocket event taps', 'Target <50ms p99 latency'],
+      status: 'optional',
     },
   },
 
@@ -94,7 +99,7 @@ const NODES: ArchNode[] = [
       title: 'Intelligent Data Pipeline',
       description: 'Automated data quality scoring, deduplication, and schema normalization. Declarative transform DSL with lineage tracking on every record.',
       specs: ['Auto-dedup + anomaly flagging', 'PII redaction & masking', 'Declarative YAML transforms', 'Full lineage graph'],
-      status: 'active',
+      status: 'core',
     },
   },
   {
@@ -109,7 +114,7 @@ const NODES: ArchNode[] = [
       title: 'Multi-modal Embedding Engine',
       description: 'Domain-adapted embedding generation across text, image, audio, and tabular modalities. Batched GPU inference with dynamic caching.',
       specs: ['Text, image, audio, tabular', 'Domain fine-tuned encoders', '1024–4096 dim vectors', 'ANN index updates <1s'],
-      status: 'active',
+      status: 'core',
     },
   },
   {
@@ -123,8 +128,8 @@ const NODES: ArchNode[] = [
     detail: {
       title: 'Private Vector Store',
       description: 'On-premise or VPC-isolated vector database with hybrid BM25 + ANN retrieval. Namespace isolation per business unit with RBAC at the collection level.',
-      specs: ['pgvector + HNSW index', 'Hybrid BM25 + dense', 'Namespace RBAC', '<10ms p99 retrieval'],
-      status: 'active',
+      specs: ['pgvector + HNSW index', 'Hybrid BM25 + dense', 'Namespace RBAC', 'Target <10ms p99 retrieval'],
+      status: 'core',
     },
   },
 
@@ -141,7 +146,7 @@ const NODES: ArchNode[] = [
       title: 'Bespoke Model Training',
       description: 'Full-cycle model development on your proprietary data. From architecture selection to hyperparameter search, evaluation harness, and regression testing.',
       specs: ['SFT, RLHF, DPO pipelines', 'Distributed multi-GPU training', 'Automated evals + red-teaming', 'Model card + drift monitoring'],
-      status: 'enterprise',
+      status: 'advanced',
     },
   },
   {
@@ -156,7 +161,7 @@ const NODES: ArchNode[] = [
       title: 'Production RAG System',
       description: 'Advanced retrieval-augmented generation with re-ranking, query expansion, and multi-hop reasoning. Fully observable with per-query citation trails.',
       specs: ['Hybrid retrieval + re-ranking', 'Query expansion + HyDE', 'Multi-hop chain-of-thought', 'Per-query citation audit'],
-      status: 'active',
+      status: 'core',
     },
   },
 
@@ -172,8 +177,8 @@ const NODES: ArchNode[] = [
     detail: {
       title: 'Autonomous Agent Network',
       description: 'Multi-agent orchestration framework with hierarchical task decomposition, tool use, and self-correction. Agents operate within verifiable guardrails.',
-      specs: ['Supervisor + worker topology', 'Tool registry (100+ tools)', 'Long-horizon memory', 'Verifiable constraint engine'],
-      status: 'enterprise',
+      specs: ['Supervisor + worker topology', 'Scoped, audited tool registry', 'Long-horizon memory', 'Verifiable constraint engine'],
+      status: 'advanced',
     },
   },
   {
@@ -188,7 +193,7 @@ const NODES: ArchNode[] = [
       title: 'Enterprise Workflow Engine',
       description: 'DAG-based task scheduler with event-driven triggers, fault-tolerant retries, and SLA enforcement. Full audit trail for every workflow execution.',
       specs: ['Cron + event triggers', 'Exponential backoff retry', 'SLA breach alerting', 'Immutable audit log'],
-      status: 'active',
+      status: 'optional',
     },
   },
   {
@@ -203,7 +208,7 @@ const NODES: ArchNode[] = [
       title: 'Safety & Guardrail Layer',
       description: 'Multi-stage output validation including content filtering, PII detection, hallucination scoring, and policy enforcement before any response is surfaced.',
       specs: ['Content policy engine', 'Hallucination scorer', 'PII + secrets detection', 'Real-time kill switch'],
-      status: 'active',
+      status: 'core',
     },
   },
 
@@ -218,9 +223,9 @@ const NODES: ArchNode[] = [
     glow: '#1a5fff',
     detail: {
       title: 'Enterprise API Gateway',
-      description: 'OpenAPI-compliant gateway with rate limiting, key rotation, and per-tenant quota enforcement. Deploy inside your VPC or through our managed edge.',
-      specs: ['REST, GraphQL, gRPC', 'mTLS + API key auth', 'Per-tenant rate limits', 'SLA: 99.99% uptime'],
-      status: 'active',
+      description: 'OpenAPI-compliant gateway with rate limiting, key rotation, and per-tenant quota enforcement. Deployed inside your VPC or on-premise.',
+      specs: ['REST, GraphQL, gRPC', 'mTLS + API key auth', 'Per-tenant rate limits', 'Uptime SLA set per deployment'],
+      status: 'core',
     },
   },
   {
@@ -233,9 +238,9 @@ const NODES: ArchNode[] = [
     glow: '#1a5fff',
     detail: {
       title: 'Pre-built Integrations',
-      description: '200+ pre-built connectors for the enterprise software layer. Bi-directional sync with CRM, ERP, ITSM, and communication platforms.',
-      specs: ['Salesforce, HubSpot, SAP', 'Slack, Teams, Jira', 'Webhook + event bus', '200+ connectors'],
-      status: 'beta',
+      description: 'Connectors to the systems your team already runs, built or configured per engagement. Bi-directional sync with CRM, ERP, ITSM, and communication platforms.',
+      specs: ['Salesforce, HubSpot, SAP', 'Slack, Teams, Jira', 'Webhook + event bus', 'Scoped to your stack'],
+      status: 'optional',
     },
   },
   {
@@ -250,7 +255,7 @@ const NODES: ArchNode[] = [
       title: 'Full-stack Observability',
       description: 'End-to-end tracing from raw input through model inference to final output. Token usage, latency histograms, error rates, and cost attribution per team.',
       specs: ['OpenTelemetry native', 'Per-model cost attribution', 'Latency + error dashboards', 'Anomaly alerting'],
-      status: 'active',
+      status: 'core',
     },
   },
 ];
@@ -283,17 +288,32 @@ const LAYER_LABELS = [
   { label: 'Delivery',          sublabel: 'Layer 4' },
 ];
 
-const STATUS_COLOR: Record<string, string> = {
-  active:     'text-emerald-400 border-emerald-400/30 bg-emerald-400/10',
-  beta:       'text-amber-400  border-amber-400/30  bg-amber-400/10',
-  enterprise: 'text-primary    border-primary/30    bg-primary/10',
+const STATUS_COLOR: Record<Status, string> = {
+  core:     'text-emerald-400 border-emerald-400/30 bg-emerald-400/10',
+  optional: 'text-amber-400  border-amber-400/30  bg-amber-400/10',
+  advanced: 'text-primary    border-primary/30    bg-primary/10',
 };
+
+const STATUS_HINT: Record<Status, string> = {
+  core:     'in most deployments',
+  optional: 'added when the use case needs it',
+  advanced: 'scoped after a successful pilot',
+};
+
+const NODE_IDS = new Set(NODES.map(n => n.id));
 
 /* ─── Component ─────────────────────────────────────────────────────────── */
 
 export default function Architecture() {
-  const [selected, setSelected] = useState<NodeId | null>(null);
+  const search = useSearch();
+  const openContact = useContact();
+  const [selected, setSelected] = useState<NodeId | null>(() => {
+    const node = new URLSearchParams(search).get('node');
+    return node && NODE_IDS.has(node) ? node : null;
+  });
   const [hovered, setHovered] = useState<NodeId | null>(null);
+
+  usePageMeta('Reference Architecture — Turtledove Labs', '/architecture');
 
   const selectedNode = NODES.find(n => n.id === selected);
   const layerGroups = [0, 1, 2, 3, 4].map(l => NODES.filter(n => n.layer === l));
@@ -312,24 +332,25 @@ export default function Architecture() {
       <header className="fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-md border-b border-border py-4">
         <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <Link href="/">
-              <Button variant="ghost" size="sm" className="gap-2 font-mono text-xs text-muted-foreground hover:text-foreground">
-                <ArrowLeft className="w-3.5 h-3.5" /> Back
-              </Button>
-            </Link>
+            <Button variant="ghost" size="sm" className="gap-2 font-mono text-xs text-muted-foreground hover:text-foreground" asChild>
+              <Link href="/">
+                <ArrowLeft className="w-3.5 h-3.5" /> Home
+              </Link>
+            </Button>
             <div className="hidden md:block w-px h-5 bg-border" />
-            <img src={logo} alt="Turtledove Labs" className="hidden md:block h-8 w-auto bg-white rounded px-2 py-0.5" />
+            <Link href="/" aria-label="Turtledove Labs home" className="hidden md:block">
+              <img src={logo} alt="Turtledove Labs" width={387} height={96} className="h-8 w-auto" />
+            </Link>
           </div>
 
           <div className="text-center">
-            <h1 className="font-mono text-xs text-primary uppercase tracking-widest">AI Architecture</h1>
+            <p className="font-mono text-xs text-primary uppercase tracking-widest">Reference Architecture</p>
             <p className="font-mono text-[10px] text-muted-foreground mt-0.5">End-to-end intelligence stack</p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="font-mono text-[10px] text-emerald-400 uppercase tracking-widest hidden sm:inline">All systems nominal</span>
-          </div>
+          <Button size="sm" onClick={() => openContact('architecture_header')}>
+            Talk to Us
+          </Button>
         </div>
       </header>
 
@@ -344,11 +365,11 @@ export default function Architecture() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tighter mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tighter mb-4">
               The <span className="text-gradient-primary">Intelligence Stack</span>
-            </h2>
+            </h1>
             <p className="font-mono text-sm text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              Five layers. One sovereign system. Click any component to inspect its role in your enterprise AI infrastructure.
+              Five layers. One sovereign system. This is the reference design we adapt for each engagement — most pilots use only a few of these components. Click any one to inspect its role.
             </p>
           </motion.div>
 
@@ -495,14 +516,32 @@ export default function Architecture() {
             transition={{ delay: 0.8 }}
           >
             <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">Status:</span>
-            {(['active', 'beta', 'enterprise'] as const).map(s => (
-              <div key={s} className={`flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider px-2 py-1 border rounded-full ${STATUS_COLOR[s]}`}>
+            {(['core', 'optional', 'advanced'] as const).map(s => (
+              <div key={s} className={`flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider px-2 py-1 border rounded-full ${STATUS_COLOR[s]}`} title={STATUS_HINT[s]}>
                 <div className="w-1.5 h-1.5 rounded-full bg-current" />
-                {s}
+                {s} <span className="normal-case tracking-normal opacity-70">— {STATUS_HINT[s]}</span>
               </div>
             ))}
-            <span className="font-mono text-[10px] text-muted-foreground">Click any node to inspect</span>
           </motion.div>
+
+          {/* Next step */}
+          <div className="mt-20 border border-border bg-card/60 p-8 md:p-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
+            <div className="max-w-xl">
+              <p className="font-mono text-primary text-xs uppercase tracking-widest mb-3">Next step</p>
+              <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-3">Which of these does your use case need?</h2>
+              <p className="font-mono text-sm text-muted-foreground leading-relaxed">
+                A no-cost architecture review maps your workflow onto this stack and scopes the smallest pilot that proves it.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+              <Button size="lg" onClick={() => openContact('architecture_footer')}>
+                Book an Architecture Review →
+              </Button>
+              <Button variant="outline" size="lg" asChild>
+                <Link href="/#how-it-works">How engagements work</Link>
+              </Button>
+            </div>
+          </div>
         </div>
       </main>
 
@@ -541,6 +580,7 @@ export default function Architecture() {
                 </div>
                 <button
                   onClick={() => setSelected(null)}
+                  aria-label="Close details"
                   className="shrink-0 ml-4 p-1.5 hover:bg-muted transition-colors rounded-sm"
                 >
                   <X className="w-4 h-4 text-muted-foreground" />

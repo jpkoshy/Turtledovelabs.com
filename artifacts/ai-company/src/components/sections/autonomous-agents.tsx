@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import agentsImg from '../../../attached_assets/generated_images/autonomous-agents.jpg';
 import { Button } from '@/components/ui/button';
+import { mailtoHref } from '@/lib/contact';
 
 export default function AutonomousAgents() {
   return (
@@ -82,7 +83,7 @@ export default function AutonomousAgents() {
             </p>
             
             <Button variant="outline" className="mt-4" asChild>
-              <a href="mailto:hello@turtledovelabs.com?subject=Workflow%20Automation">Discuss a Workflow</a>
+              <a href={mailtoHref('Workflow Automation')}>Discuss a Workflow</a>
             </Button>
           </motion.div>
 

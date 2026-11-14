@@ -6,7 +6,7 @@ const stats = [
     label: 'See Enterprise-Level Impact',
     desc: 'Of organizations report any enterprise-wide EBIT impact from AI, even though 88% now use it in at least one function.',
     source: 'McKinsey, State of AI 2025 (Nov 2025)',
-    href: 'https://www.mckinsey.com/no/our-insights/the-state-of-ai',
+    href: 'https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai',
   },
   {
     value: '40%+',

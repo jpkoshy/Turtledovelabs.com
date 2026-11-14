@@ -1,6 +1,6 @@
-# [Project name]
+# Turtledove Labs — turtledovelabs.com
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Marketing site for Turtledove Labs: custom AI models and agent systems deployed inside the client's own infrastructure. Static React/Vite app in `artifacts/ai-company`, deployed to GitHub Pages from `main` by `.github/workflows/pages.yml`.
 
 ## Run & Operate
 
@@ -22,7 +22,10 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- Site: `artifacts/ai-company` — pages in `src/pages`, home sections in `src/components/sections`
+- Contact email and mailto builder: `src/lib/contact.ts`; every CTA opens the shared modal via `useContact()` (`src/components/contact-provider.tsx`)
+- Brand: `src/assets/logo.svg` and `public/favicon.svg` come from the logo set in the `jpkoshy/Biz-AI-Content` repo (`turtledovelabs-logo/`)
+- SEO: `index.html` (meta, Open Graph, JSON-LD), `public/sitemap.xml`, `public/robots.txt`, per-route title/canonical via `src/lib/page-meta.ts`
 
 ## Architecture decisions
 
@@ -38,7 +41,9 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- The site is static, so the contact form hands off to the visitor's email client (pre-filled mailto); there is no backend submission.
+- `trackEvent` calls Umami, but no Umami script is loaded in `index.html` yet, so events are currently dropped.
+- Add new routes to `public/sitemap.xml`.
 
 ## Pointers
 

@@ -8,8 +8,9 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Loader2, ChevronRight, User, Building2, Mail, Briefcase, MessageSquare } from 'lucide-react';
+import { CheckCircle, ChevronRight, User, Building2, Mail, Briefcase, MessageSquare } from 'lucide-react';
 import { trackEvent } from '@/lib/analytics';
+import { CONTACT_EMAIL, mailtoHref } from '@/lib/contact';
 
 interface FormData {
   name: string;
@@ -67,12 +68,25 @@ function Field({ label, icon: Icon, id, type = 'text', placeholder, multiline, v
 interface ContactModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  location: string;
 }
 
-export default function ContactModal({ open, onOpenChange }: ContactModalProps) {
+function buildMailto(form: FormData): string {
+  const body = [
+    `Name: ${form.name.trim()}`,
+    `Company: ${form.company.trim()}`,
+    `Email: ${form.email.trim()}`,
+    `Role: ${form.role.trim() || '—'}`,
+    '',
+    'What we are looking to solve:',
+    form.message.trim(),
+  ].join('\n');
+  return mailtoHref(`Architecture Review — ${form.company.trim()}`, body);
+}
+
+export default function ContactModal({ open, onOpenChange, location }: ContactModalProps) {
   const [form, setForm] = useState<FormData>(EMPTY);
   const [errors, setErrors] = useState<Partial<FormData>>({});
-  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const update = (id: keyof FormData, val: string) => {
@@ -91,23 +105,18 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) {
-      trackEvent('contact_form_validation_failed', { location: 'hero' });
+      trackEvent('contact_form_validation_failed', { location });
       return;
     }
-    trackEvent('contact_form_submission_started', {
-      location: 'hero',
-      role_provided: Boolean(form.role.trim()),
-    });
-    setSubmitting(true);
-    // Simulate network latency — swap for a real endpoint later
-    await new Promise(r => setTimeout(r, 1400));
-    setSubmitting(false);
+    // The site is static (GitHub Pages), so the request is handed to the
+    // visitor's email client, pre-filled, rather than posted to a backend.
+    window.location.href = buildMailto(form);
     setSubmitted(true);
     trackEvent('contact_form_submitted', {
-      location: 'hero',
+      location,
       role_provided: Boolean(form.role.trim()),
     });
   };
@@ -134,13 +143,13 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
           <DialogHeader className="mb-6">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(0,119,255,0.8)]" />
-              <span className="font-mono text-[10px] text-primary uppercase tracking-widest">Initialize Protocol</span>
+              <span className="font-mono text-[10px] text-primary uppercase tracking-widest">Architecture Review</span>
             </div>
             <DialogTitle className="text-2xl font-bold tracking-tight">
               Start a Conversation
             </DialogTitle>
             <DialogDescription className="font-mono text-sm text-muted-foreground leading-relaxed mt-1">
-              Tell us about your AI challenge. Our engineering team will respond within one business day.
+              Tell us about the workflow or decision you want to automate. Submitting opens a pre-filled email to {CONTACT_EMAIL}; we reply within one business day.
             </DialogDescription>
           </DialogHeader>
 
@@ -158,9 +167,11 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                   <CheckCircle className="w-8 h-8 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Request Received</h3>
+                  <h3 className="text-xl font-bold mb-2">Almost there — hit send</h3>
                   <p className="font-mono text-sm text-muted-foreground leading-relaxed max-w-sm">
-                    We have logged your submission, {form.name.split(' ')[0]}. An engineer will reach out to <span className="text-foreground">{form.email}</span> within one business day.
+                    Your email app should now show a pre-filled message, {form.name.trim().split(' ')[0]}. Send it and we will reply to <span className="text-foreground">{form.email}</span> within one business day. Nothing opened?{' '}
+                    <a href={buildMailto(form)} className="text-primary underline underline-offset-4">Open the email</a>{' '}
+                    or write to <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary underline underline-offset-4">{CONTACT_EMAIL}</a>.
                   </p>
                 </div>
                 <div className="w-full border border-border bg-card p-4 text-left space-y-2">
@@ -216,20 +227,11 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
 
                 <div className="flex items-center justify-between pt-2">
                   <p className="font-mono text-[10px] text-muted-foreground">
-                    No commitment required. We respond within 24 h.
+                    No cost, no commitment. Opens your email app.
                   </p>
-                  <Button type="submit" className="gap-2 font-mono text-xs" disabled={submitting}>
-                    {submitting ? (
-                      <>
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-                        Submit Request
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </>
-                    )}
+                  <Button type="submit" className="gap-2 font-mono text-xs">
+                    Continue in Email
+                    <ChevronRight className="w-3.5 h-3.5" />
                   </Button>
                 </div>
               </motion.form>
