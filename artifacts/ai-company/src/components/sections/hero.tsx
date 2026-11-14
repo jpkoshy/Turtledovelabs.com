@@ -5,6 +5,7 @@ import { Link } from 'wouter';
 import heroBg from '../../../attached_assets/generated_images/hero-bg.jpg';
 import { useContact } from '@/components/contact-provider';
 import { trackEvent } from '@/lib/analytics';
+import { SITE_CONFIG } from '@/lib/site-config';
 
 export default function Hero() {
   const openContact = useContact();
@@ -91,11 +92,13 @@ export default function Hero() {
       </div>
 
       {/* Decorative side element */}
-      <div className="hidden lg:flex absolute right-12 bottom-12 flex-col items-end gap-2 font-mono text-[10px] text-muted-foreground opacity-50">
-        <span>LAT: 37.7749° N</span>
-        <span>LNG: 122.4194° W</span>
-        <span>STATUS: NOMINAL</span>
-      </div>
+      {SITE_CONFIG.location && (
+        <div className="hidden lg:flex absolute right-12 bottom-12 flex-col items-end gap-2 font-mono text-[10px] text-muted-foreground opacity-50">
+          <span>LAT: {SITE_CONFIG.location.lat}</span>
+          <span>LNG: {SITE_CONFIG.location.lng}</span>
+          <span>BASE: {SITE_CONFIG.location.city.toUpperCase()}</span>
+        </div>
+      )}
     </section>
   );
 }

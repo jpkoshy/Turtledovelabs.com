@@ -1,6 +1,8 @@
+import { Linkedin } from 'lucide-react';
 import logo from '@/assets/logo.svg';
 import { NAV_LINKS, NavLink } from '@/components/layout/navbar';
 import { CONTACT_EMAIL } from '@/lib/contact';
+import { SITE_CONFIG } from '@/lib/site-config';
 
 export default function Footer() {
   return (
@@ -36,6 +38,16 @@ export default function Footer() {
             <p className="mt-4 text-muted-foreground font-mono text-xs leading-relaxed">
               Tell us which workflow, decision, or document set is slowing your team down.
             </p>
+            {SITE_CONFIG.linkedinUrl && (
+              <a
+                href={SITE_CONFIG.linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-6 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Linkedin className="w-4 h-4" /> Turtledove Labs on LinkedIn ↗
+              </a>
+            )}
           </div>
         </div>
 
