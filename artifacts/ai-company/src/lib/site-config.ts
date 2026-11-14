@@ -4,7 +4,7 @@
  */
 export const SITE_CONFIG = {
   /** Shown as the hero's coordinate readout, e.g. { city: 'Toronto, ON', lat: '43.6532° N', lng: '79.3832° W' }. */
-  location: null as { city: string; lat: string; lng: string } | null,
+  location: { city: 'Toronto, ON', lat: '43.6532° N', lng: '79.3832° W' } as { city: string; lat: string; lng: string } | null,
   /** Company LinkedIn page, e.g. 'https://www.linkedin.com/company/turtledove-labs'. */
   linkedinUrl: '',
 };
