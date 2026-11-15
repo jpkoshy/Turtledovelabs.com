@@ -1,18 +1,17 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 import { Link } from 'wouter';
 import heroBg from '../../../attached_assets/generated_images/hero-bg.jpg';
-import ContactModal from '@/components/contact-modal';
+import { useContact } from '@/components/contact-provider';
 import { trackEvent } from '@/lib/analytics';
+import { SITE_CONFIG } from '@/lib/site-config';
 
 export default function Hero() {
-  const [contactOpen, setContactOpen] = useState(false);
+  const openContact = useContact();
 
   return (
     <section className="relative min-h-[100dvh] flex items-center pt-20 overflow-hidden">
-      <ContactModal open={contactOpen} onOpenChange={setContactOpen} />
       {/* Background Image & Overlay */}
       <div className="absolute inset-0 z-0">
         <img 
@@ -75,32 +74,31 @@ export default function Hero() {
             <Button
               size="lg"
               className="group w-full sm:w-auto"
-              onClick={() => {
-                trackEvent('contact_form_opened', { location: 'hero' });
-                setContactOpen(true);
-              }}
+              onClick={() => openContact('hero')}
             >
               Book an Architecture Review
               <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Link
-              href="/architecture"
-              onClick={() => trackEvent('architecture_viewed', { location: 'hero' })}
-            >
-              <Button variant="outline" size="lg" className="w-full sm:w-auto">
+            <Button variant="outline" size="lg" className="w-full sm:w-auto" asChild>
+              <Link
+                href="/architecture"
+                onClick={() => trackEvent('architecture_viewed', { location: 'hero' })}
+              >
                 View Architecture →
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </motion.div>
         </div>
       </div>
 
       {/* Decorative side element */}
-      <div className="hidden lg:flex absolute right-12 bottom-12 flex-col items-end gap-2 font-mono text-[10px] text-muted-foreground opacity-50">
-        <span>LAT: 37.7749° N</span>
-        <span>LNG: 122.4194° W</span>
-        <span>STATUS: NOMINAL</span>
-      </div>
+      {SITE_CONFIG.location && (
+        <div className="hidden lg:flex absolute right-12 bottom-12 flex-col items-end gap-2 font-mono text-[10px] text-muted-foreground opacity-50">
+          <span>LAT: {SITE_CONFIG.location.lat}</span>
+          <span>LNG: {SITE_CONFIG.location.lng}</span>
+          <span>BASE: {SITE_CONFIG.location.city.toUpperCase()}</span>
+        </div>
+      )}
     </section>
   );
 }

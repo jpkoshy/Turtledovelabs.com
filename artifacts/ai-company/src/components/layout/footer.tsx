@@ -1,32 +1,53 @@
-import logo from '@assets/Turtledovelabs_1786244932892.png';
+import { Linkedin } from 'lucide-react';
+import logo from '@/assets/logo.svg';
+import { NAV_LINKS, NavLink } from '@/components/layout/navbar';
+import { CONTACT_EMAIL } from '@/lib/contact';
+import { SITE_CONFIG } from '@/lib/site-config';
 
 export default function Footer() {
   return (
     <footer id="contact" className="border-t border-border bg-background pt-24 pb-12 relative overflow-hidden">
       <div className="absolute inset-0 bg-electric-grid opacity-20 pointer-events-none" />
       <div className="container mx-auto px-6 md:px-12 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 mb-16">
           <div>
             <div className="mb-6">
-              <img
-                src={logo}
-                alt="Turtledove Labs"
-                className="h-14 w-auto object-contain bg-white rounded-md px-3 py-1.5 opacity-90"
-              />
+              <img src={logo} alt="Turtledove Labs" width={387} height={96} className="h-10 w-auto" />
             </div>
             <p className="text-muted-foreground font-mono text-xs leading-relaxed mb-6">
               Custom AI infrastructure, designed and deployed inside your own environment.
             </p>
           </div>
-          
-          <div className="md:text-right md:self-end">
+
+          <nav aria-label="Footer">
+            <h4 className="font-mono text-primary text-xs uppercase tracking-widest mb-5">Explore</h4>
+            <ul className="space-y-3 font-mono text-sm">
+              {NAV_LINKS.map((link) => (
+                <li key={link.href}>
+                  <NavLink {...link} className="text-muted-foreground hover:text-primary transition-colors" />
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="md:text-right">
             <h4 className="font-mono text-primary text-xs uppercase tracking-widest mb-5">Start a Conversation</h4>
-            <a href="mailto:hello@turtledovelabs.com" className="text-xl md:text-2xl font-bold hover:text-primary transition-colors">
-              hello@turtledovelabs.com
+            <a href={`mailto:${CONTACT_EMAIL}`} className="text-xl md:text-2xl font-bold hover:text-primary transition-colors break-all">
+              {CONTACT_EMAIL}
             </a>
             <p className="mt-4 text-muted-foreground font-mono text-xs leading-relaxed">
               Tell us which workflow, decision, or document set is slowing your team down.
             </p>
+            {SITE_CONFIG.linkedinUrl && (
+              <a
+                href={SITE_CONFIG.linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-6 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Linkedin className="w-4 h-4" /> Turtledove Labs on LinkedIn ↗
+              </a>
+            )}
           </div>
         </div>
 
@@ -36,7 +57,7 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(0,255,255,0.8)] animate-pulse" />
-            <span className="font-mono text-xs text-primary uppercase tracking-widest">All systems operational</span>
+            <span className="font-mono text-xs text-primary uppercase tracking-widest">Accepting pilot engagements</span>
           </div>
         </div>
       </div>

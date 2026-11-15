@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Terminal } from 'lucide-react';
+import { useContact } from '@/components/contact-provider';
 
 export default function CTA() {
+  const openContact = useContact();
   return (
     <section className="py-32 relative border-t border-border bg-card overflow-hidden">
       {/* Abstract glowing background effect */}
@@ -35,8 +37,8 @@ export default function CTA() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button size="lg" className="w-full sm:w-auto min-w-[260px]" asChild>
-                <a href="mailto:hello@turtledovelabs.com?subject=Architecture%20Review">Book an Architecture Review →</a>
+              <Button size="lg" className="w-full sm:w-auto min-w-[260px]" onClick={() => openContact('closing_cta')}>
+                Book an Architecture Review →
               </Button>
             </div>
           </motion.div>

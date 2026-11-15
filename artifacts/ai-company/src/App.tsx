@@ -7,13 +7,18 @@ import NotFound from '@/pages/not-found';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 import Home from '@/pages/home';
 import Architecture from '@/pages/architecture';
+import { ContactProvider } from '@/components/contact-provider';
 
 const queryClient = new QueryClient();
 
 function ScrollToTop() {
   const [pathname] = useLocation();
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // Honour /#section links, including ones arriving from another route.
+    const id = window.location.hash.slice(1);
+    const target = id ? document.getElementById(id) : null;
+    if (target) target.scrollIntoView();
+    else window.scrollTo(0, 0);
   }, [pathname]);
   return null;
 }
@@ -41,10 +46,12 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-          <div className="min-h-[100dvh] bg-background text-foreground flex flex-col relative">
-            <div className="noise-overlay" />
-            <Router />
-          </div>
+          <ContactProvider>
+            <div className="min-h-[100dvh] bg-background text-foreground flex flex-col relative">
+              <div className="noise-overlay" />
+              <Router />
+            </div>
+          </ContactProvider>
         </WouterRouter>
         <Toaster />
       </TooltipProvider>

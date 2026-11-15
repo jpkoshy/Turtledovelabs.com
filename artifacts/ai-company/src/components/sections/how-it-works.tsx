@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { Link } from 'wouter';
+import { useContact } from '@/components/contact-provider';
 
 const steps = [
   {
@@ -20,6 +22,7 @@ const steps = [
 ];
 
 export default function HowItWorks() {
+  const openContact = useContact();
   return (
     <section id="how-it-works" className="py-32 border-t border-border bg-card/40 relative overflow-hidden">
       <div className="absolute inset-0 bg-electric-grid opacity-10 pointer-events-none" />
@@ -53,9 +56,12 @@ export default function HowItWorks() {
           ))}
         </div>
 
-        <div className="mt-10">
-          <Button size="lg" asChild>
-            <a href="mailto:hello@turtledovelabs.com?subject=Architecture%20Review">Book an Architecture Review →</a>
+        <div className="mt-10 flex flex-col sm:flex-row gap-4">
+          <Button size="lg" onClick={() => openContact('how_it_works')}>
+            Book an Architecture Review →
+          </Button>
+          <Button variant="outline" size="lg" asChild>
+            <Link href="/architecture">See the reference architecture</Link>
           </Button>
         </div>
       </div>
